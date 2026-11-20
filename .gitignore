@@ -26,3 +26,6 @@ dist-ssr
 # Local preview screenshots
 preview/
 dist-preview
+.env
+.env.*
+!.env.example

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ctaNav, primaryNav } from '../../config/navigation'
+import { CMS_MODE } from '../../lib/env'
 import { Monogram } from '../ui/icons'
 import { handleNavClick } from './navLinkHandler'
 
@@ -42,6 +43,12 @@ export function SiteFooter() {
           <p>
             © {YEAR} ATELIER STUDIO. Προσωρινή ονομασία. ·{' '}
             <Link to="/politiki-aporritou" className="link-draw text-stone hover:text-paper">Πολιτική Απορρήτου</Link>
+            {CMS_MODE === 'demo' && (
+              <>
+                {' · '}
+                <Link to="/diaxeirisi" className="link-draw text-stone hover:text-paper">Διαχείριση (επίδειξη)</Link>
+              </>
+            )}
           </p>
           <p>Οι φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>
         </div>

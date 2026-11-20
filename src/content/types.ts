@@ -13,6 +13,8 @@ export interface ImageAsset {
   height?: number
   /** Optional focal point for object-position, e.g. "50% 40%". */
   focal?: string
+  /** Responsive variants for CMS uploads (absolute URLs). */
+  srcset?: { url: string; width: number }[]
 }
 
 export type PublishStatus = 'draft' | 'published'
@@ -87,8 +89,9 @@ export interface QuoteRequest {
 
 export type QuoteSubmitResult =
   | { status: 'sent' }
+  | { status: 'demo-stored' }
   | { status: 'not-configured' }
-  | { status: 'error'; message: string }
+  | { status: 'error'; message: string; field?: string }
 
 /** table: site_settings (single row) */
 export interface SiteSettings {

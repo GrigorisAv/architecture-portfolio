@@ -33,9 +33,9 @@ export function Picture({ image, sizes, priority = false, className, imgClassNam
       {entry && <source type="image/avif" srcSet={srcSet(image.src, 'avif')} sizes={sizes} />}
       {entry && <source type="image/webp" srcSet={srcSet(image.src, 'webp')} sizes={sizes} />}
       <img
-        src={fallbackSrc(image.src)}
-        srcSet={entry ? srcSet(image.src, 'jpg') : undefined}
-        sizes={entry ? sizes : undefined}
+        src={entry ? fallbackSrc(image.src) : (image.srcset?.find((v) => v.width >= 1600)?.url ?? image.src)}
+        srcSet={entry ? srcSet(image.src, 'jpg') : image.srcset?.map((v) => `${v.url} ${v.width}w`).join(', ')}
+        sizes={entry || image.srcset ? sizes : undefined}
         alt={image.alt}
         width={width}
         height={height}

@@ -16,6 +16,7 @@ import {
   type QuoteErrors,
   type QuoteField,
 } from '../lib/quoteValidation'
+import { CMS_MODE } from '../lib/env'
 import { useSeo } from '../lib/seo'
 
 const LABELS: Record<QuoteField, string> = {
@@ -54,6 +55,7 @@ export function QuotePage() {
   const [summary, setSummary] = useState<QuoteField[]>([])
   const [phase, setPhase] = useState<Phase>('idle')
   const [result, setResult] = useState<QuoteSubmitResult | null>(null)
+  const [honeypot, setHoneypot] = useState('')
   const summaryRef = useRef<HTMLDivElement>(null)
   const resultRef = useRef<HTMLDivElement>(null)
 
@@ -84,7 +86,18 @@ export function QuotePage() {
     }
     setPhase('submitting')
     try {
-      setResult(await quoteRequests.submit(values))
+      const res = await quoteRequests.submit(values, { honeypot })
+      setResult(res)
+      if (res.status === 'sent') {
+        setValues(emptyQuote)
+        setTouched({})
+        setErrors({})
+        setSummary([])
+      } else if (res.status === 'error' && res.field && res.field in LABELS) {
+        const f = res.field as QuoteField
+        setErrors((x) => ({ ...x, [f]: 'Ο server δεν δέχτηκε αυτό το πεδίο. Ελέγξτε την τιμή του.' }))
+        setTouched((x) => ({ ...x, [f]: true }))
+      }
     } catch {
       setResult({ status: 'error', message: 'Δεν ήταν δυνατή η αποστολή. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.' })
     }
@@ -129,12 +142,16 @@ export function QuotePage() {
                     </li>
                   ))}
                 </ol>
-                <div className="mt-10 border-l-2 border-bronze pl-5">
-                  <p className="text-sm font-semibold">Σημείωση για τη δοκιμαστική έκδοση</p>
-                  <p className="mt-2 text-sm text-muted-paper">
-                    Η φόρμα ελέγχει τα στοιχεία κανονικά, αλλά η αποστολή αιτημάτων δεν έχει ενεργοποιηθεί ακόμη. Τίποτα δεν αποστέλλεται ούτε αποθηκεύεται.
-                  </p>
-                </div>
+                {CMS_MODE !== 'supabase' && (
+                  <div className="mt-10 border-l-2 border-bronze pl-5">
+                    <p className="text-sm font-semibold">Σημείωση για τη δοκιμαστική έκδοση</p>
+                    <p className="mt-2 text-sm text-muted-paper">
+                      {CMS_MODE === 'demo'
+                        ? 'Λειτουργία επίδειξης: τα αιτήματα δεν αποστέλλονται. Κρατούνται μόνο σε αυτόν τον browser, για να εμφανίζονται στη διαχείριση επίδειξης.'
+                        : 'Η φόρμα ελέγχει τα στοιχεία κανονικά, αλλά η αποστολή αιτημάτων δεν έχει ενεργοποιηθεί ακόμη. Τίποτα δεν αποστέλλεται ούτε αποθηκεύεται.'}
+                    </p>
+                  </div>
+                )}
               </div>
             </aside>
 
@@ -169,6 +186,12 @@ export function QuotePage() {
                   </ul>
                 </div>
               )}
+
+              {/* Honeypot: invisible to people, tempting to bots. Server ignores submissions that fill it. */}
+              <div className="visually-hidden" aria-hidden="true">
+                <label htmlFor="q-website">Ιστότοπος</label>
+                <input id="q-website" name="website" type="text" tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+              </div>
 
               <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
                 <FieldShell id="q-fullname" label="Ονοματεπώνυμο" required error={err('fullName')}>
@@ -297,7 +320,7 @@ export function QuotePage() {
                   {phase === 'submitting' ? (
                     <>
                       <span className="h-3 w-3 animate-spin rounded-full border border-ink border-t-transparent" aria-hidden="true" />
-                      Έλεγχος…
+                      {CMS_MODE === 'supabase' ? 'Αποστολή…' : 'Έλεγχος…'}
                     </>
                   ) : (
                     <>Αποστολή αιτήματος <ArrowRight /></>
@@ -312,6 +335,14 @@ export function QuotePage() {
                     <p className="font-display text-2xl">Τα στοιχεία είναι σωστά, αλλά το αίτημα δεν στάλθηκε.</p>
                     <p className="mt-3 text-muted-paper">
                       Η αποστολή αιτημάτων θα ενεργοποιηθεί μαζί με το σύστημα διαχείρισης. Μέχρι τότε τίποτα δεν αποστέλλεται ή αποθηκεύεται, και τα στοιχεία σας παραμένουν μόνο σε αυτή τη σελίδα.
+                    </p>
+                  </div>
+                )}
+                {result?.status === 'demo-stored' && (
+                  <div className="border border-bronze bg-white p-6">
+                    <p className="font-display text-2xl">Λειτουργία επίδειξης: το αίτημα δεν στάλθηκε.</p>
+                    <p className="mt-3 text-muted-paper">
+                      Αποθηκεύτηκε μόνο σε αυτόν τον browser και εμφανίζεται στη διαχείριση επίδειξης («Αιτήματα»). Κανείς άλλος δεν μπορεί να το δει.
                     </p>
                   </div>
                 )}

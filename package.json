@@ -9,12 +9,14 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "images": "node scripts/optimize-images.mjs",
-    "build:preview": "VITE_BASE=./ VITE_ROUTER=memory vite build --outDir dist-preview && node scripts/make-preview-page.mjs"
+    "build:preview": "VITE_BASE=./ VITE_ROUTER=memory VITE_CMS_DEMO=true vite build --outDir dist-preview && node scripts/make-preview-page.mjs",
+    "seed:generate": "node --experimental-strip-types --no-warnings scripts/generate-seed.mjs"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource-variable/noto-serif-display": "^5.3.0",
     "@gsap/react": "^2.1.2",
+    "@supabase/supabase-js": "^2.119.2",
     "gsap": "^3.15.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

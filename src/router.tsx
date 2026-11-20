@@ -64,6 +64,12 @@ const routes: RouteObject[] = [
         { path: '*', element: <RouteError />, loader: () => { throw data('Not found', { status: 404 }) } },
       ],
     },
+    {
+      // Private CMS: separate chunk, no public header/footer, never in the public bundle.
+      path: '/diaxeirisi/*',
+      hydrateFallbackElement: <HydrateFallback />,
+      lazy: async () => ({ Component: (await import('./admin/AdminApp')).default }),
+    },
 ]
 
 /**

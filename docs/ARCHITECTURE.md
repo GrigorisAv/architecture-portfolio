@@ -48,25 +48,23 @@ Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate l
 - Όλα τα GSAP μέσα σε `useGSAP({ scope })` + `gsap.matchMedia()` → αυτόματο cleanup όλων των ScrollTriggers.
 - Το περιεχόμενο αποδίδεται πλήρες χωρίς JS/κίνηση. Οι 3D/κινηματογραφικές διατάξεις ενεργοποιούνται με κλάσεις (`.is-3d`, `.is-cinematic`) μόνο σε desktop χωρίς reduced motion.
 
-## Μελλοντικό CMS (Φάση 3: δεν έχει υλοποιηθεί)
+## CMS (Φάση 3)
 
-Προτεινόμενο: ανεξάρτητο **Supabase** project (Postgres + Auth + Storage).
+Τρεις λειτουργίες, από μεταβλητές build (`src/lib/env.ts`):
 
-| Πίνακας | Πεδία (ενδεικτικά) |
-|---|---|
-| `categories` | id, slug, label, order |
-| `projects` | id, slug, title, category_id, summary, description, location, year, area_sqm, status (`draft`/`published`), featured, featured_order, cover_image_id, seo_title, seo_description, created_at, updated_at |
-| `project_images` | id, project_id, storage_path, alt, width, height, order, kind (`photo`/`drawing`/`render`) |
-| `services` | id, slug, title, summary, body (text[]), includes (text[]), image_id, order |
-| `page_content` | key (`about`, …), json περιεχόμενο (intro, bio, philosophy, approach), portrait_image_id |
-| `site_settings` | μία γραμμή: στοιχεία επικοινωνίας, SEO, κείμενα |
-| `quote_requests` | id, full_name, email, phone, project_type, area, sqm, description, consent_at, status, created_at |
+| Λειτουργία | Πότε | Περιεχόμενο | Διαχείριση `/diaxeirisi` |
+|---|---|---|---|
+| `supabase` | `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` | Supabase (lazy-loaded) | Πραγματική (email/κωδικός, μία διαχειρίστρια) |
+| `demo` | `VITE_CMS_DEMO=true` | `data.ts` + αλλαγές στο localStorage του browser | Επίδειξη, χωρίς κωδικό |
+| `off` | καμία | `data.ts` (στατικό) | Απενεργοποιημένη |
 
-- **Auth:** μόνο email/password, ενεργοποιημένη μία διαχειρίστρια, δημόσια εγγραφή απενεργοποιημένη.
-- **RLS:** δημόσιο `select` μόνο σε `status = 'published'`· όλα τα `insert/update/delete` μόνο για τη διαχειρίστρια· `quote_requests`: δημόσιο `insert` (με rate-limit/captcha μέσω Edge Function), ανάγνωση μόνο από διαχειρίστρια.
-- **Storage:** bucket `projects` (public read, admin write). Μετασχηματισμοί εικόνων ή προ-παραγωγή μεγεθών.
-- **Ενσωμάτωση:** νέο `content/supabase/supabaseRepository.ts` που υλοποιεί το `ContentRepository`· αλλαγή μίας γραμμής στο `content/repository.ts`. Οι σελίδες/loaders δεν αλλάζουν.
-- **Admin:** ξεχωριστό route group `/diaxeirisi/*` (lazy-loaded, εκτός δημόσιου bundle).
+- `src/content/records.ts`: κοινό μοντέλο εγγραφών (≈ πίνακες SQL) + μετατροπή σε domain types.
+- `src/content/supabase/`: client, row mappers, `supabaseRepository`, `supabaseQuoteSender` (RPC).
+- `src/admin/`: εφαρμογή διαχείρισης (ξεχωριστό chunk). `api/` με δύο υλοποιήσεις του `AdminApi`.
+- Φωτογραφίες: μετατρέπονται στον browser σε WebP 800/1600/2400 px και αποθηκεύονται ως
+  `media/projects/<id>/<uuid>-<w>.webp`. Τα ενδεικτικά έργα χρησιμοποιούν `local:<key>` (bundled).
+- SQL: `supabase/migrations/` (schema, RLS, storage), `supabase/seed.sql` (από `npm run seed:generate`),
+  `supabase/tests/` (μόνο τοπικά). Οδηγίες: `docs/SUPABASE_SETUP.md`.
 
 ## Hosting
 Στατικό build (`npm run build` → `dist/`). Περιλαμβάνονται SPA fallbacks: `public/_redirects` (Netlify/Cloudflare Pages), `public/.htaccess` (Apache). Για υποφάκελο: `VITE_BASE=/subpath/ npm run build`.

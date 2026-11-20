@@ -1,10 +1,11 @@
 /**
- * Content access boundary. UI code talks ONLY to `content`, never to data files or a database.
- * Phase 3 adds a Supabase implementation of `ContentRepository` and swaps it in here;
- * routes, loaders and components stay unchanged.
+ * Content access boundary. UI code talks ONLY to `content` / `quoteRequests`.
+ * Supabase is used when VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY are set; its code (and supabase-js)
+ * is loaded lazily, so sites without a backend don't ship it.
  */
 import type { AboutContent, Project, ProjectCategory, QuoteRequest, QuoteSubmitResult, Service, SiteSettings } from './types'
 import { localQuoteSender, localRepository } from './local/localRepository'
+import { CMS_MODE } from '../lib/env'
 
 export interface ContentRepository {
   listProjects(options?: { categorySlug?: string }): Promise<Project[]>
@@ -18,10 +19,34 @@ export interface ContentRepository {
   getAdjacentProject(slug: string): Promise<Project | null>
 }
 
-/** Quote requests go through this boundary; Phase 3 provides a Supabase-backed sender. */
 export interface QuoteRequestSender {
-  submit(request: QuoteRequest): Promise<QuoteSubmitResult>
+  submit(request: QuoteRequest, extra?: { honeypot?: string }): Promise<QuoteSubmitResult>
 }
 
-export const content: ContentRepository = localRepository
-export const quoteRequests: QuoteRequestSender = localQuoteSender
+const remote = () => import('./supabase/supabaseRepository')
+
+function lazyRepository(): ContentRepository {
+  const call =
+    <K extends keyof ContentRepository>(key: K) =>
+    async (...args: Parameters<ContentRepository[K]>) => {
+      const { supabaseRepository } = await remote()
+      return (supabaseRepository[key] as (...a: unknown[]) => unknown).apply(supabaseRepository, args)
+    }
+  return {
+    listProjects: call('listProjects'),
+    listFeaturedProjects: call('listFeaturedProjects'),
+    getProject: call('getProject'),
+    listCategories: call('listCategories'),
+    listServices: call('listServices'),
+    getSiteSettings: call('getSiteSettings'),
+    getAboutContent: call('getAboutContent'),
+    getAdjacentProject: call('getAdjacentProject'),
+  } as ContentRepository
+}
+
+export const content: ContentRepository = CMS_MODE === 'supabase' ? lazyRepository() : localRepository
+
+export const quoteRequests: QuoteRequestSender =
+  CMS_MODE === 'supabase'
+    ? { submit: async (req, extra) => (await remote()).supabaseQuoteSender.submit(req, extra) }
+    : localQuoteSender

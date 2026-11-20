@@ -1,50 +1,65 @@
 import type { ContentRepository, QuoteRequestSender } from '../repository'
-import { aboutContent, categories, projects, services, siteSettings } from './data'
+import { localResolver } from '../imagePaths'
+import { publishedSorted, toDomainAbout, toDomainCategory, toDomainProject, toDomainService } from '../records'
+import { CMS_MODE } from '../../lib/env'
+import { commit, getState, uid } from './demoStore'
 
-const published = () => projects.filter((p) => p.status === 'published')
+const projectsPublished = () => publishedSorted(getState().projects).map((p) => toDomainProject(p, localResolver))
 
 export const localRepository: ContentRepository = {
   async listProjects(options) {
-    const list = published()
+    const list = projectsPublished()
     if (!options?.categorySlug) return list
-    const cat = categories.find((c) => c.slug === options.categorySlug)
+    const cat = getState().categories.find((c) => c.slug === options.categorySlug)
     return cat ? list.filter((p) => p.categoryId === cat.id) : []
   },
   async listFeaturedProjects() {
-    return published()
+    return projectsPublished()
       .filter((p) => p.featured)
       .sort((a, b) => (a.featuredOrder ?? 99) - (b.featuredOrder ?? 99))
   },
   async getProject(slug) {
-    return published().find((p) => p.slug === slug) ?? null
+    return projectsPublished().find((p) => p.slug === slug) ?? null
   },
   async getAdjacentProject(slug) {
-    const list = published()
+    const list = projectsPublished()
     const i = list.findIndex((p) => p.slug === slug)
     if (i === -1 || list.length < 2) return null
     return list[(i + 1) % list.length]
   },
   async listCategories() {
-    return [...categories].sort((a, b) => a.order - b.order)
+    return [...getState().categories].sort((a, b) => a.sortOrder - b.sortOrder).map(toDomainCategory)
   },
   async listServices() {
-    return [...services].sort((a, b) => a.order - b.order)
+    return [...getState().services].sort((a, b) => a.sortOrder - b.sortOrder).map((s) => toDomainService(s, localResolver))
   },
   async getSiteSettings() {
-    return siteSettings
+    return getState().settings
   },
   async getAboutContent() {
-    return aboutContent
+    return toDomainAbout(getState().about, localResolver)
   },
 }
 
 /**
- * No backend yet: requests are NOT sent anywhere and nothing is stored.
- * The UI states this plainly. Phase 3 replaces this with a Supabase sender.
+ * Without Supabase nothing is sent. In demo mode the request is kept in this browser
+ * so it can be viewed in the demo admin; the UI says so explicitly.
  */
 export const localQuoteSender: QuoteRequestSender = {
-  async submit() {
-    await new Promise((r) => setTimeout(r, 700))
-    return { status: 'not-configured' }
+  async submit(request) {
+    await new Promise((r) => setTimeout(r, 600))
+    if (CMS_MODE !== 'demo') return { status: 'not-configured' }
+    commit((s) => {
+      s.quotes.unshift({
+        ...request,
+        id: uid(),
+        projectType: request.projectType || 'allo',
+        sizeSqm: request.sizeSqm ? Number(request.sizeSqm.replace(',', '.')) : null,
+        status: 'new',
+        adminNotes: '',
+        createdAt: new Date().toISOString(),
+      })
+    })
+    return { status: 'demo-stored' }
   },
 }

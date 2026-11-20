@@ -66,5 +66,12 @@ Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate l
 - SQL: `supabase/migrations/` (schema, RLS, storage), `supabase/seed.sql` (από `npm run seed:generate`),
   `supabase/tests/` (μόνο τοπικά). Οδηγίες: `docs/SUPABASE_SETUP.md`.
 
+## Απόδοση & SEO (Φάση 4)
+- `npm run build:static` = build + `scripts/prerender.mjs`: κάθε δημόσια σελίδα γίνεται στατικό HTML
+  (με inline CSS, preload της κύριας εικόνας), `404.html`, `sitemap.xml`. Τα prerendered HTML κάνουν
+  **hydration** (όχι αντικατάσταση) και το intro animation παραλείπεται στην πρώτη φόρτωση.
+- Κάθε εσωτερική σελίδα είναι ξεχωριστό chunk· fallback fonts με ίδιες μετρικές (χωρίς CLS).
+- Lighthouse (κινητό, προσομοίωση αργού 4G): 98–100 απόδοση, 100 προσβασιμότητα/SEO/best practices.
+
 ## Hosting
-Στατικό build (`npm run build` → `dist/`). Περιλαμβάνονται SPA fallbacks: `public/_redirects` (Netlify/Cloudflare Pages), `public/.htaccess` (Apache). Για υποφάκελο: `VITE_BASE=/subpath/ npm run build`.
+Railway με `Dockerfile` + Caddy: δείτε `docs/DEPLOYMENT.md`.

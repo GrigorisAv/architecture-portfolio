@@ -26,6 +26,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), preloadGreekFonts()],
   build: {
     target: 'es2022',
+    // Never inline fonts as data: URIs (CSP font-src 'self', and separately cacheable files).
+    assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined),
     rollupOptions: {
       output: {
         manualChunks: (id) => {

@@ -1,0 +1,48 @@
+# ATELIER STUDIO: static hosting (Railway or any container host).
+# Railway terminates TLS and routes to $PORT; Caddy serves the prerendered build from /srv.
+{
+	admin off
+	auto_https off
+}
+
+:{$PORT:8080} {
+	root * {$SITE_ROOT:/srv}
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+		# 'unsafe-inline' for styles only: the prerendered pages inline their CSS and GSAP animates style attributes.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+		-Server
+		defer
+	}
+
+	# Hashed build assets never change; images and fonts are long-lived; HTML is always revalidated.
+	@immutable path /assets/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+	@media path /images/* /favicon.svg
+	header @media Cache-Control "public, max-age=2592000"
+	@revalidate not path /assets/* /images/* /favicon.svg
+	header @revalidate Cache-Control "no-cache"
+
+	# Admin must never be indexed.
+	header /diaxeirisi* X-Robots-Tag "noindex, nofollow"
+
+	# Health check for the platform (railway.json → healthcheckPath).
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	# Exact file → prerendered page (<path>/index.html) → app shell for everything else.
+	handle {
+		try_files {path} {path}/index.html /spa.html
+		# Serve the build's pre-compressed .br/.gz files (scripts/precompress.mjs); encode covers the rest.
+		file_server {
+			precompressed br gzip
+		}
+	}
+}

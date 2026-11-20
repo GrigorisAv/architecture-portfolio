@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-*
+test-results
+playwright-report
+preview
+.git
+.github
+assets-src
+tests
+supabase/tests
+*.log
+.env
+.env.*
+!.env.example

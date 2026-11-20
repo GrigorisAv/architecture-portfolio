@@ -11,7 +11,7 @@
     "images": "node scripts/optimize-images.mjs",
     "build:preview": "VITE_BASE=./ VITE_ROUTER=memory VITE_CMS_DEMO=true vite build --outDir dist-preview && node scripts/make-preview-page.mjs",
     "seed:generate": "node --experimental-strip-types --no-warnings scripts/generate-seed.mjs",
-    "build:static": "npm run build && node scripts/prerender.mjs",
+    "build:static": "npm run build && node scripts/prerender.mjs && node scripts/precompress.mjs",
     "serve": "node scripts/serve-dist.mjs",
     "test:unit": "node --experimental-strip-types --no-warnings --test 'tests/unit/*.test.ts'",
     "test:e2e": "playwright test --trace off",

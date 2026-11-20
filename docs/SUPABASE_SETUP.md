@@ -36,8 +36,9 @@
 **Authentication → Email Templates**: μεταφράστε στα ελληνικά τα «Invite user» και «Reset password».
 
 ## 4. Μοναδική διαχειρίστρια
-1. **Authentication → Users → Invite user** → email της αρχιτέκτονα. Ο σύνδεσμος της πρόσκλησης
-   την οδηγεί στο `/diaxeirisi/neos-kodikos` για να ορίσει η ίδια κωδικό.
+1. **Authentication → Users → Add user → Create new user**: email, κωδικός (10+ χαρακτήρες) και
+   **Auto Confirm User**. (Εναλλακτικά «Send invitation»: ο σύνδεσμος οδηγεί στο
+   `/diaxeirisi/neos-kodikos` για να ορίσει η ίδια κωδικό· απαιτεί αποστολή email από το Supabase.)
 2. **SQL Editor**, δίνει δικαίωμα διαχείρισης (επιτρέπεται **μόνο ένας** διαχειριστής):
    ```sql
    insert into public.admins (user_id)

@@ -71,6 +71,14 @@ const routes: RouteObject[] = [
 ]
 
 /**
+ * Supabase sends invite/recovery links to the Site URL by default (e.g. a dashboard invite).
+ * Forward those tokens to the set-password page instead of leaving them on the home page.
+ */
+if (typeof location !== 'undefined' && /type=(invite|recovery)/.test(location.hash) && !location.pathname.endsWith('/diaxeirisi/neos-kodikos')) {
+  location.replace(`${import.meta.env.BASE_URL}diaxeirisi/neos-kodikos${location.hash}`)
+}
+
+/**
  * Production: real URLs (browser history).
  * VITE_ROUTER=memory: in-page navigation only, for sandboxed previews where URL paths are unavailable.
  */

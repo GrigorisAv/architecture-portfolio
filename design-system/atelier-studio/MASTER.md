@@ -136,7 +136,7 @@ Density 2/10 (Spacious), from the skill. Base unit 8px.
 - **12-column grid** on ≥1024px, content offset asymmetrically (e.g. text cols 2–6, image cols 7–12).
 - Breakpoints: 375 / 768 / 1024 / 1440 (skill checklist).
 - Max content width 1600px; full-bleed imagery allowed.
-- Corners: **0–2px radius**. Architecture is orthogonal. No pill shapes except the scroll indicator dot.
+- Corners: **0–2px radius**. Architecture is orthogonal. Pill shapes only for the navigation bar and its controls (client request) and the scroll indicator dot.
 - No drop shadows (skill's shadow scale intentionally unused). Depth comes from photography and motion.
 
 ---
@@ -162,9 +162,14 @@ From the skill's GSAP presets + UX rules, adapted:
 
 ## 6. Components
 
-**Navigation (desktop):** floating bar, `rgba(25,25,25,0.86)` + `backdrop-filter: blur(18px) saturate(140%)`,
-hairline `rgba(245,242,235,0.12)`. Transparent at top, condenses after 48px of scroll.
-Sliding bronze hover indicator (transform-only). Active section/page indicator persists.
+**Navigation (desktop), client-specified pill form:** a fully rounded floating bar, the one place where
+the orthogonal 0–2px corner rule is deliberately broken. Background `#1B1B1B` at 94% + blur (45% ink over the
+home hero at the top), hairline `rgba(245,242,235,0.07)`, soft drop shadow. Three-column grid: wordmark left
+(serif «ATELIER» 1.45rem / tracking 0.14em + bronze-light «STUDIO» 0.66rem / tracking 0.34em, baseline-aligned),
+links centered (Manrope 0.9rem semibold, 65% paper → paper), CTA right as an ivory pill
+(`--color-paper` fill, ink text, sentence case; hover → stone). Hover/focus indicator = a `paper/8%` pill that
+slides between links and rests on the active one; the active item also gets a 4px dot below it.
+Condenses (narrower, tighter padding) after 48px of scroll.
 
 **Navigation (mobile):** 44×44 toggle (two lines → cross). Fullscreen ink overlay with staggered serif links.
 `aria-expanded`, `aria-controls`, focus trap, Escape closes, focus returns to toggle, body scroll locked.

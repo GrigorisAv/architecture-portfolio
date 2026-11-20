@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { CMS_MODE } from '../lib/env'
 import { loadAdminApi } from './api'
 import { AdminError, type AdminApi, type AdminSession } from './api/types'
@@ -226,9 +226,38 @@ const NAV = [
   { to: '/diaxeirisi/odigos-fotografion', label: 'Οδηγός φωτογραφιών' },
 ]
 
+/** Fired by the requests page when a request's status changes, so the menu badge updates at once. */
+const REQUESTS_CHANGED = 'ds:requests-changed'
+
+/** Number of new (unread) quote requests: on navigation, on focus, every minute and on status changes. */
+function useNewRequestsCount(api: AdminApi): number {
+  const { pathname } = useLocation()
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    let alive = true
+    const refresh = () =>
+      api
+        .stats()
+        .then((s) => alive && setCount(s.requestsNew))
+        .catch(() => {})
+    refresh()
+    const timer = window.setInterval(refresh, 60_000)
+    window.addEventListener('focus', refresh)
+    window.addEventListener(REQUESTS_CHANGED, refresh)
+    return () => {
+      alive = false
+      window.clearInterval(timer)
+      window.removeEventListener('focus', refresh)
+      window.removeEventListener(REQUESTS_CHANGED, refresh)
+    }
+  }, [api, pathname])
+  return count
+}
+
 function Shell() {
   const { api, session } = useAdmin()
   const [open, setOpen] = useState(false)
+  const newRequests = useNewRequestsCount(api)
   return (
     <div className="lg:grid lg:min-h-svh lg:grid-cols-[16rem_1fr]">
       <a href="#admin-main" className="skip-link">Μετάβαση στο περιεχόμενο</a>
@@ -239,6 +268,7 @@ function Shell() {
           </Link>
           <button type="button" className="rounded-md px-3 py-2 text-sm lg:hidden" aria-expanded={open} aria-controls="admin-nav" onClick={() => setOpen((o) => !o)}>
             Μενού
+            {newRequests > 0 && <span aria-label={`${newRequests} νέα αιτήματα`} className="ml-2 inline-flex min-w-5 justify-center rounded-full bg-bronze-light px-1.5 text-xs font-bold text-ink">{newRequests}</span>}
           </button>
         </div>
         <nav id="admin-nav" aria-label="Διαχείριση" className={`${open ? 'block' : 'hidden'} px-3 pb-5 lg:block`}>
@@ -249,9 +279,15 @@ function Shell() {
                   to={n.to}
                   end={n.end}
                   onClick={() => setOpen(false)}
-                  className={({ isActive }) => `block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? 'bg-paper/10 text-paper' : 'text-paper/65 hover:bg-paper/5 hover:text-paper'}`}
+                  className={({ isActive }) => `flex items-center justify-between gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? 'bg-paper/10 text-paper' : 'text-paper/65 hover:bg-paper/5 hover:text-paper'}`}
                 >
                   {n.label}
+                  {n.to === '/diaxeirisi/aitimata' && newRequests > 0 && (
+                    <span data-new-requests className="inline-flex min-w-6 justify-center rounded-full bg-bronze-light px-2 py-0.5 text-xs font-bold text-ink">
+                      {newRequests}
+                      <span className="sr-only"> νέα</span>
+                    </span>
+                  )}
                 </NavLink>
               </li>
             ))}

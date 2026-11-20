@@ -26,8 +26,12 @@ test('quote from the site appears in the admin inbox', async ({ page }) => {
   await page.locator('button[type="submit"]').click()
   await expect(page.locator('[role="status"]').last()).toContainText('Λειτουργία επίδειξης: το αίτημα δεν στάλθηκε')
   await login(page)
+  // The menu shows how many requests are new…
+  await expect(page.locator('nav[aria-label="Διαχείριση"] [data-new-requests]')).toHaveText(/^1/)
   await page.goto('/diaxeirisi/aitimata')
   await page.getByText('Δοκιμή Πελάτη').click()
+  // …and the badge disappears once it is opened (marked as read).
+  await expect(page.locator('nav[aria-label="Διαχείριση"] [data-new-requests]')).toHaveCount(0)
   await expect(page.getByText('Νέα κατοικία σε οικόπεδο 600')).toBeVisible()
   await page.getByRole('button', { name: 'Σήμανση ως απαντημένο' }).click()
   await expect(page.locator('#q-status')).toHaveValue('replied')

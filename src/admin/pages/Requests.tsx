@@ -29,6 +29,7 @@ export function Requests() {
     quotes.setData((all) => all && all.map((x) => (x.id === q.id ? { ...x, ...p } : x)))
     try {
       await api.updateQuote(q.id, p)
+      window.dispatchEvent(new Event('ds:requests-changed'))
     } catch (err) {
       toast('error', err instanceof Error ? err.message : 'Η ενημέρωση απέτυχε.')
       quotes.reload()

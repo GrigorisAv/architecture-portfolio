@@ -25,8 +25,8 @@ grant usage on schema storage to anon, authenticated;
 grant select, insert, update, delete on storage.objects to anon, authenticated;
 grant select on storage.buckets to anon, authenticated;
 
--- Supabase default privileges on public.
-grant usage on schema public to anon, authenticated, service_role;
-alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+-- Newer Supabase projects do NOT grant table privileges to anon/authenticated automatically
+-- (verified against a real project). Emulate that: only functions keep the default EXECUTE grant,
+-- so migration 4 must grant every table privilege explicitly or these tests fail.
+grant usage on schema public to service_role;
 alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
-alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;

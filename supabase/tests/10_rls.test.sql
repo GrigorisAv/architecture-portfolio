@@ -34,6 +34,8 @@ select pg_temp.ok((select count(*) from public.projects) = 7, 'anon sees only pu
 select pg_temp.ok((select count(*) from public.projects where slug = 'grafeia-me-fos') = 0, 'anon cannot see draft project');
 select pg_temp.ok((select count(*) from public.project_images pi join public.projects p on p.id = pi.project_id where p.slug = 'grafeia-me-fos') = 0, 'anon cannot see images of draft project');
 select pg_temp.ok((select count(*) from public.categories) = 4, 'anon reads categories');
+select pg_temp.ok(not has_table_privilege('anon', 'public.quote_requests', 'select') and not has_table_privilege('anon', 'public.admins', 'select'), 'anon has no table privilege on quote_requests/admins');
+select pg_temp.ok(not has_table_privilege('anon', 'public.projects', 'insert,update,delete'), 'anon has read-only privileges on content');
 select pg_temp.ok((select count(*) from public.services) = 4, 'anon reads services');
 select pg_temp.ok((select count(*) from public.site_settings) = 1, 'anon reads site settings');
 select pg_temp.ok(public.is_admin() = false, 'anon is not admin');
@@ -41,9 +43,13 @@ select pg_temp.fails($$select * from public.quote_requests$$, 'anon cannot read 
 select pg_temp.fails($$insert into public.quote_requests (full_name, email, phone, project_type, area, description, privacy_consent) values ('x','a@b.gr','6900000000','allo','x','xxxxxxxxxxxxxxxxxxxxxxxx', true)$$, 'anon cannot insert quote requests directly');
 select pg_temp.fails($$select * from public.admins$$, 'anon cannot read admins');
 do $$ declare n int; begin
-  update public.projects set title = 'hacked' where slug = 'lefkos-ogkos';
-  get diagnostics n = row_count;
-  perform pg_temp.ok(n = 0, 'anon update of project affects 0 rows');
+  begin
+    update public.projects set title = 'hacked' where slug = 'lefkos-ogkos';
+    get diagnostics n = row_count;
+  exception when insufficient_privilege then
+    n := 0; -- refused outright (no UPDATE privilege for anon): even stronger
+  end;
+  perform pg_temp.ok(n = 0, 'anon cannot change a project');
 end $$;
 select pg_temp.fails($$insert into public.categories (slug, label) values ('x', 'x')$$, 'anon cannot create categories');
 select pg_temp.fails($$insert into storage.objects (bucket_id, name) values ('media', 'x.jpg')$$, 'anon cannot upload media');

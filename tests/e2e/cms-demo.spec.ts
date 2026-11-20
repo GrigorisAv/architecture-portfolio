@@ -118,3 +118,21 @@ test('replace the home hero photo; the sample label disappears', async ({ page }
   // Other sections still show (and label) their sample photos.
   await expect(page.locator('#filosofia figcaption')).toContainText('Ενδεικτική φωτογραφία')
 })
+
+test('footer texts and credit link are editable', async ({ page }) => {
+  await page.goto('/sxetika')
+  await expect(page.locator('footer')).toContainText('Powered by Grigoris Avgoustidis')
+  await login(page)
+  await page.locator('nav[aria-label="Διαχείριση"]').getByText('Footer').click()
+  await expect(page.locator('h1')).toHaveText('Footer (υποσέλιδο)')
+  await page.getByLabel('Σύντομη περιγραφή (κάτω από το λογότυπο)').fill('Νέα περιγραφή υποσέλιδου.')
+  await page.getByLabel('Σύνδεσμος υπογραφής (προαιρετικό)').fill('example')
+  await expect(page.getByText('Ο σύνδεσμος πρέπει να ξεκινά με https://')).toBeVisible()
+  await page.getByLabel('Σύνδεσμος υπογραφής (προαιρετικό)').fill('https://example.gr')
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('Το footer αποθηκεύτηκε')).toBeVisible()
+  await page.goto('/sxetika')
+  const footer = page.locator('footer')
+  await expect(footer).toContainText('Νέα περιγραφή υποσέλιδου.')
+  await expect(footer.getByRole('link', { name: 'Powered by Grigoris Avgoustidis' })).toHaveAttribute('href', 'https://example.gr')
+})

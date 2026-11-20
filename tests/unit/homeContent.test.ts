@@ -32,3 +32,11 @@ test('sample-photo note stays until every sample photo is replaced', async () =>
   assert.equal(aboutUsesSample({ approachImagePath: 'about/a', portraitPath: null }), false)
   assert.equal(aboutUsesSample({ approachImagePath: 'local:minimal-white-room', portraitPath: 'about/p' }), true)
 })
+
+test('footer content: defaults, empty values kept, unsafe links dropped', async () => {
+  const { FOOTER_DEFAULTS, normalizeFooter } = await import('../../src/content/records.ts')
+  assert.deepEqual(normalizeFooter(null), FOOTER_DEFAULTS)
+  assert.equal(normalizeFooter({ creditText: '' }).creditText, '')
+  assert.equal(normalizeFooter({ creditUrl: 'javascript:alert(1)' }).creditUrl, null)
+  assert.equal(normalizeFooter({ creditUrl: ' https://example.gr ' }).creditUrl, 'https://example.gr')
+})

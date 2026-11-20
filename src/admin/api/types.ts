@@ -1,4 +1,4 @@
-import type { AboutRecord, HomeRecord, CategoryRecord, ImageKind, ImageRecord, ImageResolver, ProjectRecord, QuoteRecord, QuoteStatus, ServiceRecord } from '../../content/records'
+import type { AboutRecord, FooterRecord, HomeRecord, CategoryRecord, ImageKind, ImageRecord, ImageResolver, ProjectRecord, QuoteRecord, QuoteStatus, ServiceRecord } from '../../content/records'
 import type { SiteSettings } from '../../content/types'
 
 export interface AdminSession {
@@ -55,6 +55,9 @@ export interface AdminApi {
 
   getHome(): Promise<HomeRecord>
   saveHome(home: HomeRecord): Promise<void>
+
+  getFooter(): Promise<FooterRecord>
+  saveFooter(footer: FooterRecord): Promise<void>
 
   getAbout(): Promise<AboutRecord>
   saveAbout(about: AboutRecord): Promise<void>

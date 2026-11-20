@@ -1,5 +1,5 @@
 import { storageResolver, variantPath, variantWidths } from '../../content/imagePaths'
-import { normalizeHome, type ImageRecord } from '../../content/records'
+import { normalizeFooter, normalizeHome, type ImageRecord } from '../../content/records'
 import { getSupabase, mediaPublicBase } from '../../content/supabase/client'
 import {
   fromProject, fromService, fromSettings, PROJECT_SELECT, toAbout, toCategory, toImage, toProject, toQuote, toService, toSettings,
@@ -170,6 +170,13 @@ export const supabaseAdminApi: AdminApi = {
   },
   async saveHome(home) {
     check(await sb().from('page_content').upsert({ key: 'home', content: home }), 'την αποθήκευση σελίδας')
+  },
+  async getFooter() {
+    const row = check(await sb().from('page_content').select('content').eq('key', 'footer').maybeSingle(), 'τη φόρτωση σελίδας') as { content: object } | null
+    return normalizeFooter((row?.content as never) ?? null)
+  },
+  async saveFooter(footer) {
+    check(await sb().from('page_content').upsert({ key: 'footer', content: footer }), 'την αποθήκευση σελίδας')
   },
   async getAbout() {
     const row = check(await sb().from('page_content').select('content').eq('key', 'about').maybeSingle(), 'τη φόρτωση σελίδας') as { content: object } | null

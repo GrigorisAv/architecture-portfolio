@@ -67,6 +67,8 @@ Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate l
   (`HomeRecord`, διαχείριση «Αρχική σελίδα»). Η φωτογραφία της «Επαγγελματικής προσέγγισης»
   ανήκει στο `page_content 'about'`. Ό,τι λείπει παίρνει τις ενδεικτικές φωτογραφίες (`HOME_DEFAULTS`),
   που στον ιστότοπο φέρουν την ένδειξη «Ενδεικτική φωτογραφία»· οι δικές της φωτογραφίες όχι.
+- Footer: κείμενα στο `page_content 'footer'` (διαχείριση «Footer»), επικοινωνία από `site_settings`,
+  σημείωση Unsplash αυτόματα όσο υπάρχει ενδεικτική φωτογραφία (`usesSamplePhotos`, root loader).
 - SQL: `supabase/migrations/` (schema, RLS, storage), `supabase/seed.sql` (από `npm run seed:generate`),
   `supabase/tests/` (μόνο τοπικά). Οδηγίες: `docs/SUPABASE_SETUP.md`.
 

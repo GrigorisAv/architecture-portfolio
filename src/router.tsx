@@ -16,8 +16,8 @@ const routes: RouteObject[] = [
       element: <RootLayout />,
       // Footer data (contact details, sample-photo note). Not re-run when moving between pages.
       loader: async () => {
-        const [settings, samplePhotos] = await Promise.all([content.getSiteSettings(), content.usesSamplePhotos()])
-        return { settings, samplePhotos }
+        const [settings, samplePhotos, footer] = await Promise.all([content.getSiteSettings(), content.usesSamplePhotos(), content.getFooterContent()])
+        return { settings, samplePhotos, footer }
       },
       errorElement: <RouteError />,
       hydrateFallbackElement: <HydrateFallback />,

@@ -1,6 +1,6 @@
 import type { ContentRepository, QuoteRequestSender } from '../repository'
 import { storageResolver } from '../imagePaths'
-import { aboutUsesSample, homeUsesSample, normalizeHome, toDomainAbout, toDomainCategory, toDomainHome, toDomainProject, toDomainService } from '../records'
+import { aboutUsesSample, homeUsesSample, normalizeFooter, normalizeHome, toDomainAbout, toDomainCategory, toDomainHome, toDomainProject, toDomainService } from '../records'
 import type { Project, QuoteSubmitResult } from '../types'
 import { getSupabase, mediaPublicBase } from './client'
 import { PROJECT_SELECT, toAbout, toCategory, toProject, toService, toSettings, type CategoryRow, type ProjectRow, type ServiceRow, type SettingsRow } from './rows'
@@ -60,6 +60,11 @@ export const supabaseRepository: ContentRepository = {
     const { data, error } = await getSupabase().from('page_content').select('content').eq('key', 'about').maybeSingle()
     if (error) fail('about', error)
     return toDomainAbout(toAbout((data?.content as object) ?? null), resolve())
+  },
+  async getFooterContent() {
+    const { data, error } = await getSupabase().from('page_content').select('content').eq('key', 'footer').maybeSingle()
+    if (error) fail('footer', error)
+    return normalizeFooter((data?.content as object) ?? null)
   },
   async usesSamplePhotos() {
     const sb = getSupabase()

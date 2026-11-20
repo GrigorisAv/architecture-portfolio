@@ -178,6 +178,12 @@ export const demoAdminApi: AdminApi = {
   async saveHome(home) {
     commit((d) => (d.home = home))
   },
+  async getFooter() {
+    return delay(structuredClone(getState().footer))
+  },
+  async saveFooter(footer) {
+    commit((d) => (d.footer = footer))
+  },
   async getAbout() {
     return delay(structuredClone(getState().about))
   },

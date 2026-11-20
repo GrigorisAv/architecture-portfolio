@@ -1,5 +1,6 @@
 import { Link, useLocation, useRouteLoaderData } from 'react-router-dom'
 import { ctaNav, primaryNav } from '../../config/navigation'
+import { FOOTER_DEFAULTS, type FooterRecord } from '../../content/records'
 import type { SiteSettings } from '../../content/types'
 import { CMS_MODE } from '../../lib/env'
 import { Monogram } from '../ui/icons'
@@ -10,6 +11,7 @@ const YEAR = new Date().getFullYear()
 export interface RootData {
   settings: SiteSettings
   samplePhotos: boolean
+  footer: FooterRecord
 }
 
 /** Accepts a full profile URL or a bare handle ("@name" / "name"). */
@@ -21,6 +23,7 @@ export function SiteFooter() {
   // Undefined only if the root data failed to load: show the neutral fallbacks.
   const root = useRouteLoaderData('root') as RootData | undefined
   const s = root?.settings
+  const f = root?.footer ?? FOOTER_DEFAULTS
   const hasContact = !!(s?.email || s?.phone || s?.address || s?.instagram)
   return (
     <footer className="bg-ink text-paper">
@@ -32,7 +35,7 @@ export function SiteFooter() {
               <span className="font-display text-2xl uppercase tracking-[0.3em]">DS Architect</span>
               <span className="visually-hidden">, αρχική σελίδα</span>
             </Link>
-            <p className="mt-6 max-w-sm text-muted-ink">Αρχιτεκτονική &amp; Εσωτερικοί Χώροι. Η τέχνη του χώρου, με μεσογειακό φως και καθαρές αναλογίες.</p>
+            {f.description && <p className="mt-6 max-w-sm whitespace-pre-line text-muted-ink">{f.description}</p>}
           </div>
 
           <nav aria-label="Πλοήγηση υποσέλιδου" className="col-span-2 lg:col-span-3 lg:col-start-7">
@@ -79,8 +82,16 @@ export function SiteFooter() {
                 <Link to="/diaxeirisi" className="link-draw inline-block py-2 text-stone hover:text-paper">Διαχείριση (επίδειξη)</Link>
               </>
             )}
-            {' · '}
-            <span lang="en" className="whitespace-nowrap">Powered by Grigoris Avgoustidis</span>
+            {f.creditText && (
+              <>
+                {' · '}
+                {f.creditUrl ? (
+                  <a href={f.creditUrl} target="_blank" rel="noopener" className="link-draw inline-block whitespace-nowrap py-2 hover:text-paper">{f.creditText}</a>
+                ) : (
+                  <span className="whitespace-nowrap">{f.creditText}</span>
+                )}
+              </>
+            )}
           </p>
           {(root?.samplePhotos ?? true) && <p>Ορισμένες φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>}
         </div>

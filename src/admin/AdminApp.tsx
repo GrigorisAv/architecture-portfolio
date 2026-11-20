@@ -7,6 +7,7 @@ import { AdminContext, useAdmin } from './AdminContext'
 import { AboutEditor } from './pages/AboutEditor'
 import { Categories } from './pages/Categories'
 import { Dashboard } from './pages/Dashboard'
+import { FooterEditor } from './pages/FooterEditor'
 import { HomeEditor } from './pages/HomeEditor'
 import { ProjectEditor } from './pages/ProjectEditor'
 import { ProjectsList } from './pages/ProjectsList'
@@ -201,6 +202,7 @@ const NAV = [
   { to: '/diaxeirisi/katigories', label: 'Κατηγορίες' },
   { to: '/diaxeirisi/ypiresies', label: 'Υπηρεσίες' },
   { to: '/diaxeirisi/sxetika', label: 'Σελίδα «Σχετικά»' },
+  { to: '/diaxeirisi/footer', label: 'Footer' },
   { to: '/diaxeirisi/aitimata', label: 'Αιτήματα προσφοράς' },
   { to: '/diaxeirisi/rythmiseis', label: 'Ρυθμίσεις & SEO' },
 ]
@@ -255,6 +257,7 @@ function Shell() {
             <Route path="katigories" element={<Categories />} />
             <Route path="ypiresies" element={<ServicesAdmin />} />
             <Route path="sxetika" element={<AboutEditor />} />
+            <Route path="footer" element={<FooterEditor />} />
             <Route path="aitimata" element={<Requests />} />
             <Route path="rythmiseis" element={<Settings />} />
             <Route path="*" element={<p>Η σελίδα δεν βρέθηκε. <Link className="underline" to="/diaxeirisi">Πίνακας ελέγχου</Link></p>} />

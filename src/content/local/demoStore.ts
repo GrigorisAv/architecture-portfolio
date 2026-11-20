@@ -2,7 +2,7 @@
  * Browser-only CMS store for previews (VITE_CMS_DEMO=true) and the default static content source.
  * Seeded from data.ts. In demo mode, admin edits persist in localStorage *of this browser only*.
  */
-import { ABOUT_APPROACH_DEFAULT, HOME_DEFAULTS, normalizeHome, type AboutRecord, type HomeRecord, type CategoryRecord, type ImageRecord, type ProjectRecord, type QuoteRecord, type ServiceRecord } from '../records'
+import { ABOUT_APPROACH_DEFAULT, FOOTER_DEFAULTS, HOME_DEFAULTS, normalizeFooter, normalizeHome, type FooterRecord, type AboutRecord, type HomeRecord, type CategoryRecord, type ImageRecord, type ProjectRecord, type QuoteRecord, type ServiceRecord } from '../records'
 import type { SiteSettings } from '../types'
 import { CMS_MODE } from '../../lib/env'
 import { aboutContent, categories, projects, services, siteSettings } from './data'
@@ -14,6 +14,7 @@ export interface DemoState {
   services: ServiceRecord[]
   about: AboutRecord
   home: HomeRecord
+  footer: FooterRecord
   settings: SiteSettings
   quotes: QuoteRecord[]
 }
@@ -78,6 +79,7 @@ export function seedState(): DemoState {
       isPlaceholder: aboutContent.isPlaceholder,
     },
     home: structuredClone(HOME_DEFAULTS),
+    footer: structuredClone(FOOTER_DEFAULTS),
     settings: structuredClone(siteSettings),
     quotes: [],
   }
@@ -98,6 +100,7 @@ export function getState(): DemoState {
         if (parsed.version === 1) {
           // Older saved states predate editable home/about photos.
           parsed.home = normalizeHome(parsed.home)
+          parsed.footer = normalizeFooter(parsed.footer)
           parsed.about.approachImagePath ??= ABOUT_APPROACH_DEFAULT.path
           parsed.about.approachImageAlt ??= ABOUT_APPROACH_DEFAULT.alt
           state = parsed

@@ -39,6 +39,9 @@ export const localRepository: ContentRepository = {
   async getAboutContent() {
     return toDomainAbout(getState().about, localResolver)
   },
+  async getFooterContent() {
+    return getState().footer
+  },
   async usesSamplePhotos() {
     const s = getState()
     return (

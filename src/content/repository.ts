@@ -3,6 +3,7 @@
  * Supabase is used when VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY are set; its code (and supabase-js)
  * is loaded lazily, so sites without a backend don't ship it.
  */
+import type { FooterRecord } from './records'
 import type { AboutContent, HomeContent, Project, ProjectCategory, QuoteRequest, QuoteSubmitResult, Service, SiteSettings } from './types'
 import { localQuoteSender, localRepository } from './local/localRepository'
 import { CMS_MODE } from '../lib/env'
@@ -16,6 +17,7 @@ export interface ContentRepository {
   getSiteSettings(): Promise<SiteSettings>
   getAboutContent(): Promise<AboutContent>
   getHomeContent(): Promise<HomeContent>
+  getFooterContent(): Promise<FooterRecord>
   /** True while any published page still shows a bundled sample (Unsplash) photo. */
   usesSamplePhotos(): Promise<boolean>
   /** Next published project in portfolio order (wraps around). */
@@ -45,6 +47,7 @@ function lazyRepository(): ContentRepository {
     getAboutContent: call('getAboutContent'),
     getHomeContent: call('getHomeContent'),
     usesSamplePhotos: call('usesSamplePhotos'),
+    getFooterContent: call('getFooterContent'),
     getAdjacentProject: call('getAdjacentProject'),
   } as ContentRepository
 }

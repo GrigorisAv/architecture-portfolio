@@ -97,6 +97,24 @@ export const HOME_DEFAULTS: HomeRecord = {
 }
 export const ABOUT_APPROACH_DEFAULT: SlotImage = { path: 'local:minimal-white-room', alt: 'Λιτό λευκό δωμάτιο με σκούρο καναπέ, φυτό, συρταριέρα και επιδαπέδιο φωτιστικό' }
 
+/** Footer texts (page_content key = 'footer'). Contact details come from site settings. */
+export interface FooterRecord {
+  description: string
+  creditText: string
+  /** Optional link for the credit (portfolio, LinkedIn…). */
+  creditUrl: string | null
+}
+export const FOOTER_DEFAULTS: FooterRecord = {
+  description: 'Αρχιτεκτονική & Εσωτερικοί Χώροι. Η τέχνη του χώρου, με μεσογειακό φως και καθαρές αναλογίες.',
+  creditText: 'Powered by Grigoris Avgoustidis',
+  creditUrl: null,
+}
+export function normalizeFooter(c: Partial<FooterRecord> | null | undefined): FooterRecord {
+  const str = (v: unknown, d: string) => (typeof v === 'string' ? v : d)
+  const url = typeof c?.creditUrl === 'string' && /^https?:\/\//.test(c.creditUrl.trim()) ? c.creditUrl.trim() : null
+  return { description: str(c?.description, FOOTER_DEFAULTS.description), creditText: str(c?.creditText, FOOTER_DEFAULTS.creditText), creditUrl: url }
+}
+
 /** Fills slots missing from stored content (older rows, partial saves) with the defaults. */
 export function normalizeHome(c: Partial<HomeRecord> | null | undefined): HomeRecord {
   const images = { ...HOME_DEFAULTS.images }

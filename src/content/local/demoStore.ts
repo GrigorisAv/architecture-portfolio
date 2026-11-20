@@ -4,6 +4,7 @@
  */
 import { ABOUT_APPROACH_DEFAULT, OFFICE_TITLE_DEFAULT, FOOTER_DEFAULTS, HOME_DEFAULTS, normalizeFooter, normalizeHome, type FooterRecord, type AboutRecord, type HomeRecord, type CategoryRecord, type ImageRecord, type ProjectRecord, type QuoteRecord, type ServiceRecord } from '../records'
 import type { SiteSettings } from '../types'
+import { OFFER_SETTINGS_DEFAULTS, normalizeOfferSettings, type Offer, type OfferSettings } from '../../offers/model'
 import { CMS_MODE } from '../../lib/env'
 import { aboutContent, categories, projects, services, siteSettings } from './data'
 
@@ -17,6 +18,8 @@ export interface DemoState {
   footer: FooterRecord
   settings: SiteSettings
   quotes: QuoteRecord[]
+  offers: Offer[]
+  offerSettings: OfferSettings
 }
 
 const KEY = 'ds-architect:demo-cms:v1'
@@ -86,6 +89,8 @@ export function seedState(): DemoState {
     footer: structuredClone(FOOTER_DEFAULTS),
     settings: structuredClone(siteSettings),
     quotes: [],
+    offers: [],
+    offerSettings: structuredClone(OFFER_SETTINGS_DEFAULTS),
   }
 }
 
@@ -105,6 +110,8 @@ export function getState(): DemoState {
           // Older saved states predate editable home/about photos.
           parsed.home = normalizeHome(parsed.home)
           parsed.footer = normalizeFooter(parsed.footer)
+          parsed.offers ??= []
+          parsed.offerSettings = normalizeOfferSettings(parsed.offerSettings)
           parsed.about.approachImagePath ??= ABOUT_APPROACH_DEFAULT.path
           parsed.about.approachImageAlt ??= ABOUT_APPROACH_DEFAULT.alt
           parsed.about.officeTitle ??= OFFICE_TITLE_DEFAULT

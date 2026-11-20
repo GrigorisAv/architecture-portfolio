@@ -1,5 +1,6 @@
 import type { AboutRecord, FooterRecord, HomeRecord, CategoryRecord, ImageKind, ImageRecord, ImageResolver, ProjectRecord, QuoteRecord, QuoteStatus, ServiceRecord } from '../../content/records'
 import type { SiteSettings } from '../../content/types'
+import type { Offer, OfferSettings } from '../../offers/model'
 
 export interface AdminSession {
   userId: string
@@ -14,7 +15,7 @@ export interface DashboardStats {
   requestsTotal: number
 }
 
-export type MediaFolder = 'services' | 'about' | 'home'
+export type MediaFolder = 'services' | 'about' | 'home' | 'offers'
 
 /** Error whose message is safe to show to the admin (Greek). */
 export class AdminError extends Error {}
@@ -64,6 +65,14 @@ export interface AdminApi {
 
   getSettings(): Promise<SiteSettings>
   saveSettings(settings: SiteSettings): Promise<void>
+
+  listOffers(): Promise<Offer[]>
+  getOffer(id: string): Promise<Offer | null>
+  /** Creates when `id` is empty (the database assigns number and link). */
+  saveOffer(offer: Offer): Promise<Offer>
+  deleteOffer(id: string): Promise<void>
+  getOfferSettings(): Promise<OfferSettings>
+  saveOfferSettings(settings: OfferSettings): Promise<void>
 
   listQuotes(): Promise<QuoteRecord[]>
   updateQuote(id: string, patch: { status?: QuoteStatus; adminNotes?: string }): Promise<void>

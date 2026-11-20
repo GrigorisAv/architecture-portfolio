@@ -67,6 +67,11 @@ Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate l
   (`HomeRecord`, διαχείριση «Αρχική σελίδα»). Η φωτογραφία της «Επαγγελματικής προσέγγισης»
   ανήκει στο `page_content 'about'`. Ό,τι λείπει παίρνει τις ενδεικτικές φωτογραφίες (`HOME_DEFAULTS`),
   που στον ιστότοπο φέρουν την ένδειξη «Ενδεικτική φωτογραφία»· οι δικές της φωτογραφίες όχι.
+- Προσφορές (`src/offers/`, πίνακας `offers`, migration 5): δημιουργία στο CMS (από αίτημα ή από την αρχή),
+  αυτόματη αρίθμηση `ΠΡ-ΕΤΟΣ-ΑΑΑ`, κοινό έγγραφο `OfferDocument` (οθόνη + A4 εκτύπωση/PDF), ιδιωτικός
+  σύνδεσμος `/prosfora/<token>` (noindex) όπου ο πελάτης αποδέχεται με υπογραφή μέσω των RPC
+  `get_public_offer` / `respond_offer`. Μετά την απάντηση το περιεχόμενο κλειδώνει (trigger). Ρυθμίσεις
+  υπογραφής/προεπιλογών: `page_content 'offer_settings'`.
 - Footer: κείμενα στο `page_content 'footer'` (διαχείριση «Footer»), επικοινωνία από `site_settings`,
   σημείωση Unsplash αυτόματα όσο υπάρχει ενδεικτική φωτογραφία (`usesSamplePhotos`, root loader).
 - SQL: `supabase/migrations/` (schema, RLS, storage), `supabase/seed.sql` (από `npm run seed:generate`),

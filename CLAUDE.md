@@ -37,7 +37,9 @@ npm run supabase:bundle  # migrations + seed → supabase/setup-all.sql
 ## Αρχιτεκτονική (σύνοψη· λεπτομέρειες στο docs/ARCHITECTURE.md)
 - Τα UI μιλούν μόνο στο `src/content/repository.ts` (`content`, `quoteRequests`). Δύο υλοποιήσεις:
   `local/` (data.ts + demoStore) και `supabase/` (lazy-loaded). Κοινό μοντέλο: `src/content/records.ts`.
-- `page_content` (jsonb) keys: `about`, `home` (φωτογραφίες αρχικής), `footer`. Ό,τι λείπει → defaults.
+- `page_content` (jsonb) keys: `about`, `home` (φωτογραφίες αρχικής), `footer`, `offer_settings`. Ό,τι λείπει → defaults.
+- Προσφορές: `src/offers/` (model, OfferDocument, publicApi), πίνακας `offers` (migration 5), σελίδα πελάτη
+  `/prosfora/:token` (noindex, εκτός prerender). Αποδεκτές/απορριφθείσες κλειδώνουν (DB trigger).
 - Εικόνες: `local:<key>` = bundled (ενδεικτικές), αλλιώς storage base `folder/<uuid>` με WebP 800/1600/2400.
 - CMS: `src/admin/` στο `/diaxeirisi` (noindex), μία διαχειρίστρια (`public.admins`), όχι δημόσια εγγραφή.
 - Prerender (`scripts/prerender.mjs`) → hydration. Προσοχή: ό,τι γράφει το GSAP inline πριν το snapshot

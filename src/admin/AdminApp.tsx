@@ -9,6 +9,10 @@ import { Categories } from './pages/Categories'
 import { Dashboard } from './pages/Dashboard'
 import { FooterEditor } from './pages/FooterEditor'
 import { PhotoGuide } from './pages/PhotoGuide'
+import { Offers } from './pages/Offers'
+import { OfferEditor } from './pages/OfferEditor'
+import { OfferPrint } from './pages/OfferPrint'
+import { OfferSettingsPage } from './pages/OfferSettingsPage'
 import { HomeEditor } from './pages/HomeEditor'
 import { ProjectEditor } from './pages/ProjectEditor'
 import { ProjectsList } from './pages/ProjectsList'
@@ -59,6 +63,18 @@ export default function AdminApp() {
         <Routes>
           <Route path="neos-kodikos" element={<UpdatePassword api={api} />} />
           <Route
+            path="prosfores/:id/ektyposi"
+            element={
+              session ? (
+                <AdminContext.Provider value={{ api, session }}>
+                  <OfferPrint />
+                </AdminContext.Provider>
+              ) : (
+                <Login api={api} />
+              )
+            }
+          />
+          <Route
             path="*"
             element={
               session ? (
@@ -78,7 +94,7 @@ export default function AdminApp() {
 
 function DemoBanner() {
   return (
-    <div role="note" className="bg-bronze-light px-4 py-2 text-center text-sm font-medium text-ink">
+    <div role="note" data-print-hide className="bg-bronze-light px-4 py-2 text-center text-sm font-medium text-ink">
       Λειτουργία επίδειξης: δεν υπάρχει σύνδεση με Supabase. Οι αλλαγές αποθηκεύονται μόνο σε αυτόν τον browser.
     </div>
   )
@@ -205,6 +221,7 @@ const NAV = [
   { to: '/diaxeirisi/sxetika', label: 'Σελίδα «Σχετικά»' },
   { to: '/diaxeirisi/footer', label: 'Footer' },
   { to: '/diaxeirisi/aitimata', label: 'Αιτήματα προσφοράς' },
+  { to: '/diaxeirisi/prosfores', label: 'Προσφορές' },
   { to: '/diaxeirisi/rythmiseis', label: 'Ρυθμίσεις & SEO' },
   { to: '/diaxeirisi/odigos-fotografion', label: 'Οδηγός φωτογραφιών' },
 ]
@@ -261,6 +278,9 @@ function Shell() {
             <Route path="sxetika" element={<AboutEditor />} />
             <Route path="footer" element={<FooterEditor />} />
             <Route path="aitimata" element={<Requests />} />
+            <Route path="prosfores" element={<Offers />} />
+            <Route path="prosfores/rythmiseis" element={<OfferSettingsPage />} />
+            <Route path="prosfores/:id" element={<OfferEditor />} />
             <Route path="rythmiseis" element={<Settings />} />
             <Route path="odigos-fotografion" element={<PhotoGuide />} />
             <Route path="*" element={<p>Η σελίδα δεν βρέθηκε. <Link className="underline" to="/diaxeirisi">Πίνακας ελέγχου</Link></p>} />

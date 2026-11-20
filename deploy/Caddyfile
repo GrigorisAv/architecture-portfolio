@@ -31,6 +31,8 @@
 
 	# Admin must never be indexed.
 	header /diaxeirisi* X-Robots-Tag "noindex, nofollow"
+	header /prosfora/* X-Robots-Tag "noindex, nofollow"
+	header /prosfora/* Referrer-Policy "no-referrer"
 
 	# Health check for the platform (railway.json → healthcheckPath).
 	handle /healthz {

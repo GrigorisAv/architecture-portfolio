@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { displayStatus, formatMoney, OFFER_STATUS, offerTotals, type Offer } from '../../offers/model'
 import type { QuoteRecord, QuoteStatus } from '../../content/records'
 import { useAdmin } from '../AdminContext'
 import { useLoad } from '../lib/useLoad'
@@ -12,8 +14,10 @@ export function Requests() {
   const { api } = useAdmin()
   const toast = useToast()
   const quotes = useLoad(() => api.listQuotes(), [api])
-  const [filter, setFilter] = useState<Filter>('active')
-  const [openId, setOpenId] = useState<string | null>(null)
+  const offers = useLoad(() => api.listOffers(), [api])
+  const [search] = useSearchParams()
+  const [filter, setFilter] = useState<Filter>(search.get('aitima') ? 'all' : 'active')
+  const [openId, setOpenId] = useState<string | null>(search.get('aitima'))
 
   const list = useMemo(
     () => (quotes.data ?? []).filter((q) => (filter === 'all' ? true : filter === 'active' ? q.status !== 'archived' : q.status === filter)),
@@ -67,7 +71,7 @@ export function Requests() {
             )}
           </Panel>
           {open ? (
-            <QuoteDetail key={open.id} q={open} onPatch={(p) => patch(open, p)} onDelete={async () => { await api.deleteQuote(open.id); toast('success', 'Το αίτημα διαγράφηκε.'); setOpenId(null); quotes.reload() }} />
+            <QuoteDetail key={open.id} q={open} offers={(offers.data ?? []).filter((o) => o.quoteRequestId === open.id)} onPatch={(p) => patch(open, p)} onDelete={async () => { await api.deleteQuote(open.id); toast('success', 'Το αίτημα διαγράφηκε.'); setOpenId(null); quotes.reload() }} />
           ) : (
             <Panel><p className="text-muted-paper">Επιλέξτε ένα αίτημα για να δείτε τις λεπτομέρειες.</p></Panel>
           )}
@@ -77,8 +81,9 @@ export function Requests() {
   )
 }
 
-function QuoteDetail({ q, onPatch, onDelete }: { q: QuoteRecord; onPatch: (p: { status?: QuoteStatus; adminNotes?: string }) => void; onDelete: () => Promise<void> }) {
+function QuoteDetail({ q, offers, onPatch, onDelete }: { q: QuoteRecord; offers: Offer[]; onPatch: (p: { status?: QuoteStatus; adminNotes?: string }) => void; onDelete: () => Promise<void> }) {
   const [notes, setNotes] = useState(q.adminNotes)
+  const navigate = useNavigate()
   const rows: [string, React.ReactNode][] = [
     ['Email', <a key="email" className="underline underline-offset-4" href={`mailto:${q.email}`}>{q.email}</a>],
     ['Τηλέφωνο', <a key="phone" className="underline underline-offset-4" href={`tel:${q.phone.replace(/\s/g, '')}`}>{q.phone}</a>],
@@ -94,6 +99,28 @@ function QuoteDetail({ q, onPatch, onDelete }: { q: QuoteRecord; onPatch: (p: { 
           <div key={k}><dt className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-paper">{k}</dt><dd className="mt-0.5 select-all">{v}</dd></div>
         ))}
       </dl>
+      <div className="mt-6 rounded-md border border-stone-deep/60 p-4" data-request-offers>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-paper">Προσφορές για αυτό το αίτημα</h3>
+          <Button variant="primary" onClick={() => navigate(`/diaxeirisi/prosfores/nea?aitima=${q.id}`)}>Δημιουργία προσφοράς</Button>
+        </div>
+        {offers.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-paper">Δεν έχει γίνει προσφορά ακόμη. Τα στοιχεία του πελάτη συμπληρώνονται αυτόματα.</p>
+        ) : (
+          <ul className="mt-3 flex flex-col gap-2 text-sm">
+            {offers.map((o) => {
+              const st = displayStatus(o)
+              return (
+                <li key={o.id} className="flex flex-wrap items-center gap-3">
+                  <Link to={`/diaxeirisi/prosfores/${o.id}`} className="font-semibold underline-offset-4 hover:underline">{o.number}</Link>
+                  <span className="tabular-nums">{formatMoney(offerTotals(o).total)}</span>
+                  <StatusBadge tone={OFFER_STATUS[st].tone}>{OFFER_STATUS[st].label}</StatusBadge>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
       <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.08em] text-muted-paper">Περιγραφή</h3>
       <p className="mt-1 whitespace-pre-wrap rounded-md bg-paper p-4">{q.description}</p>
       <label className="mt-6 flex flex-col gap-1.5 text-sm font-semibold">

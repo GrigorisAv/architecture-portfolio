@@ -1,6 +1,7 @@
 import { localResolver } from '../../content/imagePaths'
 import { commit, getState, uid } from '../../content/local/demoStore'
 import type { ImageRecord } from '../../content/records'
+import type { Offer } from '../../offers/model'
 import { resizeImage } from '../lib/resizeImage'
 import { AdminError, type AdminApi, type AdminSession } from './types'
 
@@ -14,7 +15,7 @@ const demoSession: AdminSession = { userId: 'demo', email: 'demo@ds-architect.lo
 
 const readSession = (): AdminSession | null => {
   try {
-    return sessionStorage.getItem(SESSION_KEY) ? demoSession : null
+    return localStorage.getItem(SESSION_KEY) ? demoSession : null
   } catch {
     return null
   }
@@ -48,7 +49,7 @@ export const demoAdminApi: AdminApi = {
   },
   async signIn() {
     try {
-      sessionStorage.setItem(SESSION_KEY, '1')
+      localStorage.setItem(SESSION_KEY, '1')
     } catch {
       /* ignore */
     }
@@ -56,7 +57,7 @@ export const demoAdminApi: AdminApi = {
   },
   async signOut() {
     try {
-      sessionStorage.removeItem(SESSION_KEY)
+      localStorage.removeItem(SESSION_KEY)
     } catch {
       /* ignore */
     }
@@ -177,6 +178,39 @@ export const demoAdminApi: AdminApi = {
   },
   async saveHome(home) {
     commit((d) => (d.home = home))
+  },
+  async listOffers() {
+    return delay(structuredClone([...getState().offers].sort((a, b) => b.createdAt.localeCompare(a.createdAt))))
+  },
+  async getOffer(id) {
+    return delay(structuredClone(getState().offers.find((o) => o.id === id) ?? null))
+  },
+  async saveOffer(offer) {
+    const now = new Date().toISOString()
+    const existing = offer.id ? getState().offers.find((o) => o.id === offer.id) : undefined
+    if (existing && (existing.status === 'accepted' || existing.status === 'declined') && JSON.stringify(existing.items) !== JSON.stringify(offer.items)) {
+      throw new AdminError('Η προσφορά έχει απαντηθεί από τον πελάτη και δεν αλλάζει πλέον.')
+    }
+    let saved: Offer
+    if (existing) {
+      saved = { ...offer, number: existing.number, publicToken: existing.publicToken, respondedAt: existing.respondedAt, clientSignedName: existing.clientSignedName, clientSignature: existing.clientSignature, updatedAt: now }
+      commit((d) => (d.offers = d.offers.map((o) => (o.id === saved.id ? saved : o))))
+    } else {
+      const year = offer.issueDate.slice(0, 4)
+      const seq = getState().offers.filter((o) => o.number.startsWith(`ΠΡ-${year}-`)).length + 1
+      saved = { ...offer, id: uid(), number: `ΠΡ-${year}-${String(seq).padStart(3, '0')}`, publicToken: uid(), createdAt: now, updatedAt: now }
+      commit((d) => d.offers.push(saved))
+    }
+    return delay(structuredClone(saved))
+  },
+  async deleteOffer(id) {
+    commit((d) => (d.offers = d.offers.filter((o) => o.id !== id)))
+  },
+  async getOfferSettings() {
+    return delay(structuredClone(getState().offerSettings))
+  },
+  async saveOfferSettings(settings) {
+    commit((d) => (d.offerSettings = settings))
   },
   async getFooter() {
     return delay(structuredClone(getState().footer))

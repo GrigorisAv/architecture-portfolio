@@ -69,6 +69,12 @@ const routes: RouteObject[] = [
       ],
     },
     {
+      // A client's offer, by private link: own chunk, no site chrome, never indexed or prerendered.
+      path: '/prosfora/:token',
+      hydrateFallbackElement: <HydrateFallback />,
+      lazy: page(() => import('./pages/OfferPublicPage'), 'OfferPublicPage'),
+    },
+    {
       // Private CMS: separate chunk, no public header/footer, never in the public bundle.
       path: '/diaxeirisi/*',
       hydrateFallbackElement: <HydrateFallback />,

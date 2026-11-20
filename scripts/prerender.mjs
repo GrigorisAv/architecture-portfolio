@@ -141,7 +141,7 @@ while (queue.length) {
   for (const href of links) {
     if (!href?.startsWith('/') || href.startsWith('//')) continue
     const clean = href.split(/[?#]/)[0].replace(/\/$/, '') || '/'
-    if (clean.startsWith('/diaxeirisi') || /\.[a-z0-9]+$/i.test(clean)) continue
+    if (clean.startsWith('/diaxeirisi') || clean.startsWith('/prosfora') || /\.[a-z0-9]+$/i.test(clean)) continue
     if (!done.has(clean) && !queue.includes(clean)) queue.push(clean)
   }
 }

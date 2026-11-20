@@ -105,5 +105,46 @@ select pg_temp.ok((select count(*) from storage.objects where bucket_id = 'media
 select pg_temp.fails($$insert into public.projects (slug, title, category_id) select 'Bad Slug', 'x', id from public.categories limit 1$$, 'invalid slug rejected');
 select pg_temp.fails($$delete from public.categories where slug = 'katoikies'$$, 'category with projects cannot be deleted');
 delete from public.categories where slug = 'test-kat';
+
+-- ----- offers (admin) -----
+insert into public.offers (client_name, title, items, valid_until) values
+  ('Πελάτης Δοκιμής', 'Μελέτη κατοικίας', '[{"id":"1","title":"Αρχιτεκτονική μελέτη","quantity":1,"unit":"κατ’ αποκοπή","unitPrice":4000}]', current_date + 30),
+  ('Δεύτερος Πελάτης', 'Ανακαίνιση', '[]', current_date - 1);
+select pg_temp.ok((select count(*) from public.offers where number ~ ('^ΠΡ-' || to_char(current_date, 'YYYY') || '-00[12]$')) = 2, 'offers get sequential numbers ΠΡ-YYYY-001/002');
+select pg_temp.ok(public.get_public_offer(jsonb_build_object('token', (select public_token from public.offers where client_name = 'Πελάτης Δοκιμής'))) is null, 'draft offer is not visible by link');
+update public.offers set status = 'sent', sent_at = now();
+reset role;
+
+-- ----- offers (visitor with the link) -----
+set role anon;
+select pg_temp.fails($$select * from public.offers$$, 'anon cannot read offers table');
+select pg_temp.ok(public.get_public_offer('{"token":"not-a-uuid"}') is null, 'garbage token returns nothing');
+select pg_temp.ok(public.get_public_offer(jsonb_build_object('token', gen_random_uuid())) is null, 'unknown token returns nothing');
+reset role;
+create temp table t_tok as select client_name, public_token from public.offers;
+grant select on t_tok to anon;
+set role anon;
+select pg_temp.ok((public.get_public_offer(jsonb_build_object('token', (select public_token from t_tok where client_name = 'Πελάτης Δοκιμής'))) ->> 'title') = 'Μελέτη κατοικίας', 'sent offer is visible by its link');
+select pg_temp.ok(not (public.get_public_offer(jsonb_build_object('token', (select public_token from t_tok where client_name = 'Πελάτης Δοκιμής'))) ? 'internal_notes'), 'internal notes are never exposed');
+select pg_temp.fails(format($$select public.respond_offer(jsonb_build_object('token', %L, 'accept', true, 'name', 'Πελάτης Δοκιμής', 'signature', 'data:image/svg+xml;base64,AAAA'))$$, (select public_token from t_tok where client_name = 'Πελάτης Δοκιμής')), 'acceptance needs a PNG signature');
+select pg_temp.fails(format($$select public.respond_offer(jsonb_build_object('token', %L, 'accept', false, 'name', 'Δε'))$$, (select public_token from t_tok where client_name = 'Δεύτερος Πελάτης')), 'expired offer cannot be answered');
+select pg_temp.ok((public.respond_offer(jsonb_build_object('token', (select public_token from t_tok where client_name = 'Πελάτης Δοκιμής'), 'accept', true, 'name', 'Πελάτης Δοκιμής', 'signature', 'data:image/png;base64,' || repeat('A', 400))) ->> 'status') = 'accepted', 'client accepts with signature');
+select pg_temp.fails(format($$select public.respond_offer(jsonb_build_object('token', %L, 'accept', false, 'name', 'Πελάτης Δοκιμής'))$$, (select public_token from t_tok where client_name = 'Πελάτης Δοκιμής')), 'an offer can be answered only once');
+reset role;
+
+-- ----- offers (admin, after the answer) -----
+set role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', false);
+select pg_temp.ok((select status = 'accepted' and client_signature like 'data:image/png%' from public.offers where client_name = 'Πελάτης Δοκιμής'), 'admin sees acceptance and signature');
+select pg_temp.fails($$update public.offers set items = '[]' where client_name = 'Πελάτης Δοκιμής'$$, 'accepted offer content is locked');
+update public.offers set internal_notes = 'Τηλεφώνησε' where client_name = 'Πελάτης Δοκιμής';
+select pg_temp.ok((select internal_notes from public.offers where client_name = 'Πελάτης Δοκιμής') = 'Τηλεφώνησε', 'internal notes stay editable');
+reset role;
+
+-- ----- offers (ordinary signed-in user) -----
+set role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}', false);
+select pg_temp.ok((select count(*) from public.offers) = 0, 'ordinary user sees no offers');
+select pg_temp.fails($$insert into public.offers (client_name) values ('x')$$, 'ordinary user cannot create offers');
 reset role;
 select 'ALL RLS TESTS PASSED' as result;

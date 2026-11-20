@@ -114,6 +114,24 @@ async function handle(route) {
     await p.goto(B + '/diaxeirisi', { waitUntil: 'networkidle' }); await p.waitForTimeout(1200);
     check('admin (supabase mode): email/password login, no demo banner', (await p.locator('input[type="password"]').count()) === 1 && !(await p.isVisible('[role="note"]')));
     await p.screenshot({ path: out + '/sb-login.png' });
+
+    // Offers by private link (RPCs get_public_offer / respond_offer, as anon)
+    const tok = '7d0b3a52-6a54-4a51-9d55-0f1f1c1a2b3c', draftTok = '9a9b9c9d-0000-4000-8000-000000000001';
+    execFileSync('psql', [...PG, '-qc', `insert into public.offers (public_token, status, client_name, title, items, valid_until, issuer) values
+      ('${tok}', 'sent', 'Πελάτης Link', 'Μελέτη ξενώνα', '[{"id":"1","title":"Αρχιτεκτονική μελέτη","quantity":1,"unit":"κατ’ αποκοπή","unitPrice":3000}]', current_date + 10, '{"name":"Δήμητρα Σαπίδου","role":"Αρχιτέκτων Μηχανικός","studio":"DS Architect"}'),
+      ('${draftTok}', 'draft', 'Πρόχειρος', 'Κρυφή', '[]', null, '{}')`]);
+    await p.goto(B + '/prosfora/' + draftTok, { waitUntil: 'networkidle' }); await p.waitForTimeout(800);
+    check('offer: draft not visible by link', (await p.textContent('h1')).includes('δεν βρέθηκε'));
+    await p.goto(B + '/prosfora/' + tok, { waitUntil: 'networkidle' }); await p.waitForTimeout(1000);
+    check('offer: sent offer rendered from RPC', (await p.textContent('.offer-doc')).includes('Μελέτη ξενώνα') && (await p.textContent('.offer-doc')).includes('3.720,00'));
+    const pad = p.locator('[data-signature-pad]'); await pad.scrollIntoViewIfNeeded(); const bx = await pad.boundingBox();
+    await p.mouse.move(bx.x + 30, bx.y + 90); await p.mouse.down();
+    for (let k = 0; k < 20; k++) await p.mouse.move(bx.x + 30 + k * 12, bx.y + 90 - (k % 4) * 10);
+    await p.mouse.up(); await p.check('[data-offer-respond] input[type="checkbox"]');
+    await p.click('[data-offer-respond] button[type="submit"]'); await p.waitForTimeout(1500);
+    const st = execFileSync('psql', [...PG, '-qtAc', `select status||'|'||client_signed_name||'|'||(client_signature like 'data:image/png;base64,%') from public.offers where public_token='${tok}'`], { encoding: 'utf8' }).trim();
+    check('offer: client acceptance + signature stored via RPC', st === 'accepted|Πελάτης Link|true', st);
+    check('offer: page shows accepted state', (await p.textContent('[role="status"]')).includes('έγινε αποδεκτή'));
   } catch (e) { results.push('ABORTED: ' + e.message.split('\n')[0]); }
   console.log(results.join('\n')); console.log('ERRORS', JSON.stringify(errors)); console.log('REST calls:', calls.length);
   await b.close();

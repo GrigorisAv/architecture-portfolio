@@ -8,6 +8,8 @@ import {
 import { MEDIA_BUCKET } from '../../lib/env'
 import { resizeImage } from '../lib/resizeImage'
 import { AdminError, type AdminApi, type AdminSession } from './types'
+import { normalizeOfferSettings } from '../../offers/model'
+import { fromOffer, toOffer, type OfferRow } from '../../offers/rows'
 
 const sb = () => getSupabase()
 
@@ -170,6 +172,31 @@ export const supabaseAdminApi: AdminApi = {
   },
   async saveHome(home) {
     check(await sb().from('page_content').upsert({ key: 'home', content: home }), 'την αποθήκευση σελίδας')
+  },
+  async listOffers() {
+    const rows = check(await sb().from('offers').select('*').order('created_at', { ascending: false }), 'τη φόρτωση προσφορών') as OfferRow[]
+    return rows.map(toOffer)
+  },
+  async getOffer(id) {
+    const row = check(await sb().from('offers').select('*').eq('id', id).maybeSingle(), 'τη φόρτωση προσφοράς') as OfferRow | null
+    return row ? toOffer(row) : null
+  },
+  async saveOffer(offer) {
+    const res = offer.id
+      ? await sb().from('offers').update(fromOffer(offer)).eq('id', offer.id).select('*').single()
+      : await sb().from('offers').insert(fromOffer(offer)).select('*').single()
+    if (res.error?.message.includes('offer_locked')) throw new AdminError('Η προσφορά έχει απαντηθεί από τον πελάτη και δεν αλλάζει πλέον.')
+    return toOffer(check(res, 'την αποθήκευση προσφοράς') as OfferRow)
+  },
+  async deleteOffer(id) {
+    check(await sb().from('offers').delete().eq('id', id), 'τη διαγραφή προσφοράς')
+  },
+  async getOfferSettings() {
+    const row = check(await sb().from('page_content').select('content').eq('key', 'offer_settings').maybeSingle(), 'τη φόρτωση ρυθμίσεων') as { content: object } | null
+    return normalizeOfferSettings((row?.content as never) ?? null)
+  },
+  async saveOfferSettings(settings) {
+    check(await sb().from('page_content').upsert({ key: 'offer_settings', content: settings }), 'την αποθήκευση ρυθμίσεων')
   },
   async getFooter() {
     const row = check(await sb().from('page_content').select('content').eq('key', 'footer').maybeSingle(), 'τη φόρτωση σελίδας') as { content: object } | null

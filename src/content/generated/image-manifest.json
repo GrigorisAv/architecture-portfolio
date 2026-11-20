@@ -1,4 +1,18 @@
 {
+  "calm-bedroom": {
+    "width": 2400,
+    "height": 3000,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#b8b8a8",
+    "average": "#92897e",
+    "tint": "#302921",
+    "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBQCdASoYAB4APu1cqE2ppKOiN/VYATAdiWMAtshFV26tsT69VLbuibaWMVYlmUkIIAD+6tj0LkBXrIAmWuF2aWZVU1xeTnQVMG9PL08hFkrVggwhbBP0YxctG7cuT08Q2acVvn74Q8OSe5/ye511QICJsOLRtt/kcEqymihycuL0cAA="
+  },
   "cycladic-white-house": {
     "width": 2400,
     "height": 2400,
@@ -27,6 +41,20 @@
     "tint": "#392a18",
     "lqip": "data:image/webp;base64,UklGRs4AAABXRUJQVlA4IMIAAACQBgCdASoYACQAPu1orFAppaQisBVYATAdiWQAsR+Ow4Vve30nMhGJ3/0kKj6vT4hvNPwraWcvRJRWyfTIAP7PbX0bm0r0HmV7JW29Zvlkd3NWAbj00LQFb63agj+EhiKK7Ks4ljWqWHpiKqOG5iAIXptF8oknCnKxigQtDntzM0Eh+rnDWD92y89bz9MbMcwHTP9nd0nBTrq5NtuUm2qQ18sB/k8+zIMWMXf2P+BByKq9iGDhNgUDqDXP/J1C4QAAAA=="
   },
+  "dark-kitchen": {
+    "width": 2400,
+    "height": 3200,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#b8a898",
+    "average": "#978f7b",
+    "tint": "#342d1d",
+    "lqip": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAACQBQCdASoYACAAPu1cqk6ppKOiMBgMATAdiWMAnQA0bD6aayefE3w6SFFmXlEyXvbmIZV4QAD+YoVHhRdOihsP94HhYTqlJMHd+VTKbVNsGxtrn6P/ZUjEKRr4FgjslEWtHHuR0LYO6qSA1lV4ZaJK/c1JS12RtXzybQHwAza2KzGzOCtQKN3OL/UHCmHAAAA="
+  },
   "dining-stair-interior": {
     "width": 2400,
     "height": 1600,
@@ -40,6 +68,20 @@
     "average": "#a79e97",
     "tint": "#302721",
     "lqip": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADwAwCdASoYABAAPu1orU6ppiSiMAgBMB2JZwDG9B56x9NhiaVdF0GQAPjdAavlLg/zH+NPMdhH+6WM/Qz8b7FSyEVvegHcbT2ZNF6j7UTON+qrH/klPeyLdGq0U6CgbxogAA=="
+  },
+  "gallery-living-room": {
+    "width": 2400,
+    "height": 1800,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#c8c8b8",
+    "average": "#b1ada3",
+    "tint": "#302c21",
+    "lqip": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAACwBACdASoYABIAPu1wslKppiSiqAgBMB2JZwDE2A9mwVoYJ7DURysvpuMjv8QAAP7D8QcowZOu6vOW1hAt7NF6WSbqvADcXp+KCV7V9HQxybvt0rRnTXsr9p3Zr1ZgJIqhaWA4fvwAAA=="
   },
   "glass-stair-pool": {
     "width": 2400,
@@ -83,6 +125,34 @@
     "tint": "#212830",
     "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAQBACdASoYABAAPu1Ct1apoqakGAEwHYliAJ0ygAmfdpuNBziKJnIx6AD+aJLsmvMwsr8GqpNQ32ZSPTSmlY7J1ZQCUDfWPOaTTyCBwy26umv7LUyZa+UuxErtuNqGSyg8dqUxJ+IPwAAA"
   },
+  "house-under-tree": {
+    "width": 2400,
+    "height": 1600,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#182818",
+    "average": "#505959",
+    "tint": "#242d2d",
+    "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAACwAwCdASoYABAAPu1kqk2ppaQiMAgBMB2JQBOgAVjSaTMaABKCYADMhS1N/SBEMujH9oe83O5a39JOWDl6+1srEPJEp5tvOW9d1Ji/j/h7drJmVaf5hcPZ+ggOxoQAAAA="
+  },
+  "minimal-white-room": {
+    "width": 2400,
+    "height": 1602,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#c8c8c8",
+    "average": "#b9bdbf",
+    "tint": "#242a2d",
+    "lqip": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAwCdASoYABAAPu1mq04ppaQiMAgBMB2JZwAAUqANNgydtXI9lAAA/q+bFrQaIGYN4uCrmGt92WPcUk8CV6RdlD2PGwcBLOhAAA=="
+  },
   "oak-stair-detail": {
     "width": 2400,
     "height": 3600,
@@ -96,6 +166,20 @@
     "average": "#b19f8b",
     "tint": "#392918",
     "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAACQBgCdASoYACQAPuFepU2opSOiMA1REBwJYwC1G75I6NkoxIpQ9yk6akdIYJn9gz4gjC5rdaJYb7puiE5YAP7YLC9iDQhZPCRDnBlL7f7NCqCaB7kYfVLPYaHIbg1pEZ6VSp9upEOa6GE984kWrxYGEw8UQqqsmgv/XmXmx4mGcmVjfqeYYmcEjXcLbjtff+TRcyZzUwNL8+ZMcAA="
+  },
+  "office-corridor": {
+    "width": 2400,
+    "height": 1602,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#887868",
+    "average": "#797775",
+    "tint": "#2e2823",
+    "lqip": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAACwAwCdASoYABAAPu1krU2ppaSiMAgBMB2JZQC+SCKyHPDJnVR5fADyUx0Kz+PZFnxCIirwUJ/RohyrAHvU2VREmlq+v1ys+dfckulKEBuLdAjMzQ6V1AAA"
   },
   "pool-villa": {
     "width": 2400,
@@ -111,6 +195,34 @@
     "tint": "#222e2f",
     "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBQCdASoYABIAPu1sqk6ppqOiMBgIATAdiUATpfgQHQT770MBDeT0rotrtmwnx7QAAP6vRmKcmmqv/NSJMLEwCn4b/t98BbO0kAako15dqdTKZokLXGFYQBH8lUoPh/zDIcPt20Lj/D1va27LvzwUuvM81SMXcAA="
   },
+  "stone-bathroom": {
+    "width": 2400,
+    "height": 3600,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#989898",
+    "average": "#595a5d",
+    "tint": "#24262d",
+    "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAACwBQCdASoYACQAPuFipk2opiOiNVv4ARAcCWcABofhazcj74M1j9yf3mEg53qBV0TJuafy5YAA/qvZeNnVoYuqQqTQ3uf0SOInez+88/TJT00KSo/+hTDuCoHR2WuI1ZCo75DqOMA3auaSyNM7DLdbqgPUpGv5B+oU8PkeKb8D1sB1o+LwieiOmrbgwIQA"
+  },
+  "studio-office-lamps": {
+    "width": 2400,
+    "height": 1600,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#d8e8e8",
+    "average": "#b4b8b7",
+    "tint": "#242d2a",
+    "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAwCdASoYABAAPu1oqk6ppiQiMAgBMB2JZQCzgBtzZSM0dEoRsBIAAP32n2wn3O7xDud5teR/agz3e7LwmY2qSlFEsH4X54aR61zWbH/eUonfSgAAAA=="
+  },
   "timber-black-house": {
     "width": 2400,
     "height": 1600,
@@ -124,6 +236,34 @@
     "average": "#767975",
     "tint": "#272d23",
     "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADQAwCdASoYABAAPu1mqk4ppaOiMAgBMB2JQBOgBDLRGvp/owUL+QAA/Mu6CrXJYaGUfiWTJEiwnTemNHOyQGA0Len1/g6Qr3WSDWcKQJCRC7a2uOKj1OabroKctjuvgAA="
+  },
+  "timber-house-garden": {
+    "width": 2400,
+    "height": 1600,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#080808",
+    "average": "#6a7066",
+    "tint": "#282d23",
+    "lqip": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAwBACdASoYABAAPu1kq04ppaQiMAgBMB2JZAC/OBtmJMenoxcSPRa7EzAA/pOMNZ9/xfRoZutp1pqFq8TnXXg2VdCylW9D/R4LwhmE4Y+24BALlBrJW9lf2aC+CnhVSYqGWWwAAAA="
+  },
+  "villa-pool-terrace": {
+    "width": 2400,
+    "height": 1600,
+    "widths": [
+      640,
+      1024,
+      1600,
+      2200
+    ],
+    "dominant": "#080808",
+    "average": "#5f7566",
+    "tint": "#203224",
+    "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoYABAAPu1iqU2ppaOiMAgBMB2JZgCdH8AJWa1M/uXonoCygAD+4LSu1H8THt5ei5doJzz4IgEuOiOBHlHjwBfPU9ORcNzQvUspNIn71n6BqX0dUT4seM7KKtlImz/XVQps1+NvfGK1eQjWCb6j7OgAAAA="
   },
   "warm-living-interior": {
     "width": 2400,

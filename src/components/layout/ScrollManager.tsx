@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useLocation, useNavigationType } from 'react-router-dom'
 import { ScrollTrigger } from '../../lib/gsap'
 
@@ -11,13 +11,18 @@ import { ScrollTrigger } from '../../lib/gsap'
 export function ScrollManager() {
   const { pathname, hash } = useLocation()
   const navType = useNavigationType()
+  // Read through a ref: a query-only change (e.g. project filters) must not re-run the scroll effect.
+  const navTypeRef = useRef(navType)
+  useLayoutEffect(() => {
+    navTypeRef.current = navType
+  }, [navType])
 
   useLayoutEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = navType === 'POP' ? 'auto' : 'manual'
   }, [navType])
 
   useEffect(() => {
-    if (navType === 'POP') return
+    if (navTypeRef.current === 'POP') return
     if (!hash) {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
       return
@@ -38,7 +43,7 @@ export function ScrollManager() {
       cancelled = true
       window.clearTimeout(t)
     }
-  }, [pathname, hash, navType])
+  }, [pathname, hash])
 
   return null
 }

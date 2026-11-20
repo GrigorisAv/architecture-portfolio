@@ -28,7 +28,7 @@ export function HomePage() {
       <Disciplines services={services} />
       <MaterialStudies />
       <ArchitectProfile settings={settings} />
-      <ContactCta />
+      <ContactCta index="06" />
     </>
   )
 }

@@ -181,6 +181,34 @@ When closed the overlay is `visibility:hidden` + `inert`: it can **never** stay 
 (no CLS), `loading="lazy"` below the fold, `fetchpriority="high"` for the hero only. Greek `alt` text that
 describes space, light and material.
 
+**Inner page intro (`PageIntro`):** eyebrow → display title (one italic accent word) → lead (≤ 2 sentences).
+Top padding `clamp(9rem,18vw,14rem)` to clear the floating nav. Soft staggered rise on load only.
+
+**Project card (`ProjectCard`):** whole card = one link. Photo in a fixed-ratio frame; hover scales the
+image to 1.05 *inside* the frame (no layout shift) and fades in a bottom scrim with "Δείτε το έργο".
+Title turns italic on hover. Ratios follow the asymmetric grid rhythm (4/3, 4/5, 4/5, 3/2).
+
+**Category filters:** wrapping row of square toggle buttons (`aria-pressed`, count in tabular nums),
+never a clipped single line (skill: *Chip Collection Reflow*). Sticky under the nav on ≥1024px only
+(on phones it would cover a third of the screen). State lives in the URL (`?katigoria=`).
+Result count announced via `aria-live`. Empty result = message + "Προβολή όλων" action.
+
+**Lightbox:** native `<dialog>` + `showModal()` (focus containment, Escape). Arrow keys navigate,
+counter is `aria-live`, focus returns to the opening thumbnail, page scroll locked while open.
+No blur placeholder behind `object-contain` images.
+
+**Forms (skill: Inline Validation, Focusable Error Summary, Form Labels, Required Indicators):**
+- Visible labels above underline-style inputs; required marked with bronze `*`, optional with "(προαιρετικό)".
+- Validate on blur; once touched, re-validate on change. Never validate untouched fields.
+- On failed submit: error summary at the top (`role="alert"`, focused), each item links to and focuses its field;
+  inline errors stay. `aria-invalid` + `aria-describedby` on every field.
+- Choice groups = `fieldset/legend` with radio inputs styled as square toggles.
+- Submit shows a busy state; results are stated honestly (no "sent" unless the backend confirms).
+- Error color `--color-error` on paper; messages say what is wrong and how to fix it.
+
+**Placeholder drawings:** schematic SVG plan (`PlanDrawing`) only while real drawings are missing,
+always labeled "Ενδεικτικό σχέδιο".
+
 **Placeholder content** is always visibly labeled `Ενδεικτικό` / `Προσωρινό περιεχόμενο`.
 
 ---

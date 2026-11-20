@@ -21,13 +21,15 @@ await writeFile(path.join(DIR, 'index.html'), `${keepHead.trim()}\n${body.trim()
 for (const f of ['_redirects', '.htaccess', 'robots.txt']) await rm(path.join(DIR, f), { force: true })
 const unused = ['white-angular-architecture']
 
+// Browsers pick AVIF/WebP <source>s; only the 1600w JPEG (the <img src> fallback) is needed.
+const jpgVariant = (name) => /-\d+\.jpg$/.test(name) && !name.endsWith('-1600.jpg')
 const files = []
 async function walk(rel) {
   for (const name of await readdir(path.join(DIR, rel))) {
     const r = path.posix.join(rel, name)
     const s = await stat(path.join(DIR, r))
     if (s.isDirectory()) await walk(r)
-    else if (r !== 'index.html' && r !== 'files.json' && !unused.some((u) => name.startsWith(u))) files.push(r)
+    else if (r !== 'index.html' && r !== 'files.json' && !unused.some((u) => name.startsWith(u)) && !jpgVariant(name)) files.push(r)
   }
 }
 await walk('')

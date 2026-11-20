@@ -1,5 +1,5 @@
-import type { ContentRepository } from '../repository'
-import { categories, projects, services, siteSettings } from './data'
+import type { ContentRepository, QuoteRequestSender } from '../repository'
+import { aboutContent, categories, projects, services, siteSettings } from './data'
 
 const published = () => projects.filter((p) => p.status === 'published')
 
@@ -18,6 +18,12 @@ export const localRepository: ContentRepository = {
   async getProject(slug) {
     return published().find((p) => p.slug === slug) ?? null
   },
+  async getAdjacentProject(slug) {
+    const list = published()
+    const i = list.findIndex((p) => p.slug === slug)
+    if (i === -1 || list.length < 2) return null
+    return list[(i + 1) % list.length]
+  },
   async listCategories() {
     return [...categories].sort((a, b) => a.order - b.order)
   },
@@ -26,5 +32,19 @@ export const localRepository: ContentRepository = {
   },
   async getSiteSettings() {
     return siteSettings
+  },
+  async getAboutContent() {
+    return aboutContent
+  },
+}
+
+/**
+ * No backend yet: requests are NOT sent anywhere and nothing is stored.
+ * The UI states this plainly. Phase 3 replaces this with a Supabase sender.
+ */
+export const localQuoteSender: QuoteRequestSender = {
+  async submit() {
+    await new Promise((r) => setTimeout(r, 700))
+    return { status: 'not-configured' }
   },
 }

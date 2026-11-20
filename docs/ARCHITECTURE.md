@@ -16,12 +16,32 @@ src/
     media/Picture.tsx         AVIF/WebP/JPEG, srcset, lazy, blur-up
     ui/                       Eyebrow, PlaceholderBadge, icons
   sections/home/              Hero, Philosophy, ProjectGallery3D, Disciplines, MaterialStudies, ArchitectProfile, ContactCta
-  pages/                      Σελίδες + placeholders Φάσης 2
+  pages/                      HomePage, ProjectsPage, ProjectDetailPage, ServicesPage, AboutPage, QuotePage, PrivacyPage
+  components/project/         ProjectCard, Lightbox, PlanDrawing
+  components/form/            Πεδία φόρμας (label, hint, inline error)
+  lib/quoteValidation.ts      Κανόνες επικύρωσης (επαναχρησιμοποιούνται server-side στη Φάση 3)
   lib/                        gsap (plugins, MOTION queries), scroll, seo
   styles/                     tokens.css (= design-system MASTER.md), global.css
 design-system/atelier-studio/ MASTER.md (πηγή αλήθειας) + skill-output/ (ακατέργαστη έξοδος UI UX Pro Max)
 assets-src/photos/            Πρωτότυπες φωτογραφίες → `npm run images` → public/images
 ```
+
+## Routes
+
+| Διαδρομή | Σελίδα | Loader (μέσω `content`) |
+|---|---|---|
+| `/` | Αρχική | featured έργα, κατηγορίες, υπηρεσίες, ρυθμίσεις |
+| `/erga?katigoria=<slug>` | Έργα με φίλτρο | έργα, κατηγορίες |
+| `/erga/:slug` | Έργο | έργο, επόμενο έργο, κατηγορίες (404 αν δεν υπάρχει) |
+| `/ypiresies#<slug>` | Υπηρεσίες | υπηρεσίες |
+| `/sxetika` | Σχετικά με εμένα | about content, ρυθμίσεις |
+| `/aitima-prosforas` | Αίτημα Προσφοράς | — (αποστολή μέσω `quoteRequests`) |
+| `/politiki-aporritou` | Πολιτική Απορρήτου (προσχέδιο) | — |
+
+## Φόρμα αιτήματος προσφοράς
+Η αποστολή περνά από το `QuoteRequestSender`. Η τοπική υλοποίηση **δεν στέλνει και δεν αποθηκεύει τίποτα**
+και επιστρέφει `not-configured`, το οποίο η σελίδα εμφανίζει με ειλικρίνεια. Στη Φάση 3 αντικαθίσταται από
+Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate limit).
 
 ## Κανόνες κίνησης
 - Ένα μόνο pinned section (3D gallery). Το hero χρησιμοποιεί CSS `position: sticky`.
@@ -37,7 +57,8 @@ assets-src/photos/            Πρωτότυπες φωτογραφίες → `n
 | `categories` | id, slug, label, order |
 | `projects` | id, slug, title, category_id, summary, description, location, year, area_sqm, status (`draft`/`published`), featured, featured_order, cover_image_id, seo_title, seo_description, created_at, updated_at |
 | `project_images` | id, project_id, storage_path, alt, width, height, order, kind (`photo`/`drawing`/`render`) |
-| `services` | id, slug, title, summary, body, order |
+| `services` | id, slug, title, summary, body (text[]), includes (text[]), image_id, order |
+| `page_content` | key (`about`, …), json περιεχόμενο (intro, bio, philosophy, approach), portrait_image_id |
 | `site_settings` | μία γραμμή: στοιχεία επικοινωνίας, SEO, κείμενα |
 | `quote_requests` | id, full_name, email, phone, project_type, area, sqm, description, consent_at, status, created_at |
 

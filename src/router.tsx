@@ -4,7 +4,12 @@ import { content } from './content/repository'
 import { HomePage } from './pages/HomePage'
 import { HydrateFallback } from './pages/HydrateFallback'
 import { RouteError } from './pages/RouteError'
-import { AboutPage, ProjectDetailPage, ProjectsPage, QuotePage, ServicesPage } from './pages/placeholders'
+import { AboutPage } from './pages/AboutPage'
+import { PrivacyPage } from './pages/PrivacyPage'
+import { ProjectDetailPage } from './pages/ProjectDetailPage'
+import { ProjectsPage } from './pages/ProjectsPage'
+import { QuotePage } from './pages/QuotePage'
+import { ServicesPage } from './pages/ServicesPage'
 
 /** Route loaders call the content repository only, so the CMS swap in Phase 3 is invisible to pages. */
 const routes: RouteObject[] = [
@@ -27,19 +32,35 @@ const routes: RouteObject[] = [
             return { featured, categories, services, settings }
           },
         },
-        { path: 'erga', element: <ProjectsPage /> },
+        {
+          path: 'erga',
+          element: <ProjectsPage />,
+          loader: async () => {
+            const [projects, categories] = await Promise.all([content.listProjects(), content.listCategories()])
+            return { projects, categories }
+          },
+        },
         {
           path: 'erga/:slug',
           element: <ProjectDetailPage />,
           loader: async ({ params }) => {
-            const project = await content.getProject(params.slug ?? '')
+            const slug = params.slug ?? ''
+            const [project, next, categories] = await Promise.all([content.getProject(slug), content.getAdjacentProject(slug), content.listCategories()])
             if (!project) throw data('Not found', { status: 404 })
-            return { project }
+            return { project, next, categories }
           },
         },
-        { path: 'ypiresies', element: <ServicesPage /> },
-        { path: 'sxetika', element: <AboutPage /> },
+        { path: 'ypiresies', element: <ServicesPage />, loader: async () => ({ services: await content.listServices() }) },
+        {
+          path: 'sxetika',
+          element: <AboutPage />,
+          loader: async () => {
+            const [about, settings] = await Promise.all([content.getAboutContent(), content.getSiteSettings()])
+            return { about, settings }
+          },
+        },
         { path: 'aitima-prosforas', element: <QuotePage /> },
+        { path: 'politiki-aporritou', element: <PrivacyPage /> },
         { path: '*', element: <RouteError />, loader: () => { throw data('Not found', { status: 404 }) } },
       ],
     },

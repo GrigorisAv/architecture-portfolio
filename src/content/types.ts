@@ -32,7 +32,8 @@ export interface Project {
   title: string
   categoryId: string
   summary: string
-  description?: string
+  /** Long-form text, one entry per paragraph. */
+  description: string[]
   location?: string | null
   year?: number | null
   areaSqm?: number | null
@@ -41,6 +42,8 @@ export interface Project {
   featuredOrder?: number | null
   cover: ImageAsset
   gallery: ImageAsset[]
+  /** Plans, sections and renders (project_images.kind = 'drawing' | 'render'). */
+  drawings: ImageAsset[]
   /** True for demo content. Rendered with a visible "Ενδεικτικό" label. */
   isPlaceholder: boolean
 }
@@ -51,9 +54,41 @@ export interface Service {
   slug: string
   title: string
   summary: string
+  body: string[]
+  includes: string[]
+  image: ImageAsset
   order: number
   isPlaceholder: boolean
 }
+
+/** table: page_content (key = 'about') */
+export interface AboutContent {
+  intro: string
+  bio: string[]
+  philosophy: { title: string; text: string }[]
+  approach: { title: string; text: string }[]
+  portrait: ImageAsset | null
+  isPlaceholder: boolean
+}
+
+export type ProjectType = 'nea-katoikia' | 'anakainisi' | 'interior' | 'epaggelmatikos' | 'allo'
+
+/** table: quote_requests (public insert only, admin read) */
+export interface QuoteRequest {
+  fullName: string
+  email: string
+  phone: string
+  projectType: ProjectType | ''
+  area: string
+  sizeSqm: string
+  description: string
+  privacyConsent: boolean
+}
+
+export type QuoteSubmitResult =
+  | { status: 'sent' }
+  | { status: 'not-configured' }
+  | { status: 'error'; message: string }
 
 /** table: site_settings (single row) */
 export interface SiteSettings {

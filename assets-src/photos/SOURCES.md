@@ -20,3 +20,18 @@
 | white-angular-architecture.jpg | 1487958449943-2429e8be8625 |
 
 URL: `https://unsplash.com/photos/<id>` · Αναδημιουργία εκδόσεων: `npm run images`
+
+## Φάση 2
+
+| Αρχείο | Unsplash photo ID |
+|---|---|
+| dark-kitchen.jpg | 1600489000022-c2086d79f9d4 |
+| stone-bathroom.jpg | 1600566752355-35792bedcfea |
+| calm-bedroom.jpg | 1617098900591-3f90928e8c54 |
+| house-under-tree.jpg | 1600585154340-be6161a56a0c |
+| timber-house-garden.jpg | 1600607688969-a5bfcd646154 |
+| studio-office-lamps.jpg | 1524758631624-e2822e304c36 |
+| office-corridor.jpg | 1497366216548-37526070297c |
+| minimal-white-room.jpg | 1513694203232-719a280e022f |
+| gallery-living-room.jpg | 1600210491369-e753d80a41f3 |
+| villa-pool-terrace.jpg | 1512917774080-9991f1c4c750 |

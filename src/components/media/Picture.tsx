@@ -11,19 +11,21 @@ interface PictureProps {
   className?: string
   imgClassName?: string
   style?: CSSProperties
+  /** Blur-up placeholder behind the image (off for letterboxed/contain images). */
+  blur?: boolean
 }
 
 /**
  * Responsive <picture>: AVIF → WebP → JPEG, intrinsic width/height (no CLS),
  * lazy by default, blur-up LQIP behind the image. Works with manifest keys or absolute URLs (CMS).
  */
-export function Picture({ image, sizes, priority = false, className, imgClassName = '', style }: PictureProps) {
+export function Picture({ image, sizes, priority = false, className, imgClassName = '', style, blur = true }: PictureProps) {
   const entry = getManifestEntry(image.src)
   const width = image.width ?? entry?.width
   const height = image.height ?? entry?.height
   const imgStyle: CSSProperties = {
     objectPosition: image.focal,
-    backgroundImage: entry ? `url("${entry.lqip}")` : undefined,
+    backgroundImage: entry && blur ? `url("${entry.lqip}")` : undefined,
   }
 
   return (

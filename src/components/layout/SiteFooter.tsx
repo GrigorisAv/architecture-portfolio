@@ -39,7 +39,10 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-20 flex flex-col gap-4 border-t border-paper/12 pt-6 text-sm text-muted-ink md:flex-row md:items-center md:justify-between">
-          <p>© {YEAR} ATELIER STUDIO. Προσωρινή ονομασία.</p>
+          <p>
+            © {YEAR} ATELIER STUDIO. Προσωρινή ονομασία. ·{' '}
+            <Link to="/politiki-aporritou" className="link-draw text-stone hover:text-paper">Πολιτική Απορρήτου</Link>
+          </p>
           <p>Οι φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>
         </div>
       </div>

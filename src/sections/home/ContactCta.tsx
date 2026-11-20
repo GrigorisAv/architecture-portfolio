@@ -4,13 +4,13 @@ import { useEditorialReveals } from '../../components/editorial/useEditorialReve
 import { Eyebrow } from '../../components/ui/Eyebrow'
 import { ArrowRight } from '../../components/ui/icons'
 
-export function ContactCta() {
+export function ContactCta({ index }: { index?: string }) {
   const root = useRef<HTMLElement>(null)
   useEditorialReveals(root)
   return (
     <section id="epikoinonia" ref={root} aria-labelledby="cta-title" className="relative overflow-hidden bg-ink text-paper outline-none">
       <div className="page-x mx-auto max-w-[var(--container-page)] py-section">
-        <Eyebrow index="06" className="text-bronze-light">Επικοινωνία</Eyebrow>
+        <Eyebrow index={index} className="text-bronze-light">Επικοινωνία</Eyebrow>
         <h2 id="cta-title" className="mt-10 max-w-[14ch] text-display" data-reveal-text>
           Ας σχεδιάσουμε τον <em className="italic text-bronze-light">χώρο</em> σας.
         </h2>

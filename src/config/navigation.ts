@@ -7,7 +7,6 @@ export interface NavItem {
 }
 
 export const primaryNav: NavItem[] = [
-  { label: 'Στούντιο', to: '/#filosofia', section: 'filosofia' },
   { label: 'Έργα', to: '/erga', section: 'erga' },
   { label: 'Υπηρεσίες', to: '/ypiresies', section: 'ypiresies' },
   { label: 'Σχετικά', to: '/sxetika', section: 'architektonas' },

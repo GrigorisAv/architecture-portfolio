@@ -16,6 +16,7 @@ export function MediaPicker({
   removeLabel = 'Αφαίρεση',
   canRemove = true,
   spec,
+  warn = true,
 }: {
   label: string
   folder: MediaFolder
@@ -25,6 +26,8 @@ export function MediaPicker({
   canRemove?: boolean
   /** Recommended size for this slot: shown above the picker, checked after picking. */
   spec?: ImageSpec
+  /** false: the caller shows warnings itself (e.g. per photo in a list). */
+  warn?: boolean
 }) {
   const { api } = useAdmin()
   const toast = useToast()
@@ -34,8 +37,8 @@ export function MediaPicker({
   const pick = async (file?: File) => {
     if (!file) return
     setBusy(true)
-    const size = spec ? await readImageSize(file) : null
-    setWarnings(spec && size ? checkFit(spec, size.width, size.height) : [])
+    const size = warn && spec ? await readImageSize(file) : null
+    setWarnings(warn && spec && size ? checkFit(spec, size.width, size.height) : [])
     try {
       const r = await api.uploadMedia(folder, file)
       onChange(r.path)

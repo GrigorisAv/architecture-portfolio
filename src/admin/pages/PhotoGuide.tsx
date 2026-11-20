@@ -37,6 +37,9 @@ const SECTIONS: { title: string; to: string; rows: Row[]; footnote?: string }[] 
     rows: [
       { label: 'Προσωπική φωτογραφία (πορτρέτο)', spec: IMAGE_SPECS.portrait },
       { label: 'Επαγγελματική προσέγγιση', spec: IMAGE_SPECS.aboutApproach },
+      { label: 'Το γραφείο · φωτογραφία 1η, 4η, 7η…', spec: gallerySpec(0) },
+      { label: 'Το γραφείο · φωτογραφία 2η, 5η, 8η…', spec: gallerySpec(1) },
+      { label: 'Το γραφείο · φωτογραφία 3η, 6η, 9η…', spec: gallerySpec(2) },
     ],
   },
 ]

@@ -4,6 +4,7 @@ import { useAdmin } from '../AdminContext'
 import { useLoad } from '../lib/useLoad'
 import { IMAGE_SPECS } from '../lib/imageGuide'
 import { MediaPicker } from '../ui/MediaPicker'
+import { PhotoListEditor } from '../ui/PhotoListEditor'
 import { Button, ErrorNote, Field, Loading, PageHeader, PairListEditor, Panel, StringListEditor, Toggle } from '../ui/kit'
 import { inputCls, useBeforeUnload, useToast } from '../ui/kitUtils'
 
@@ -26,6 +27,10 @@ function AboutForm({ initial }: { initial: AboutRecord }) {
   const set = <K extends keyof AboutRecord>(k: K, v: AboutRecord[K]) => setA((x) => ({ ...x, [k]: v }))
 
   const save = async () => {
+    if (a.officeImages.some((i) => !i.alt.trim())) {
+      toast('error', 'Συμπληρώστε την περιγραφή (alt) σε κάθε φωτογραφία του γραφείου.')
+      return
+    }
     setBusy(true)
     try {
       await api.saveAbout(a)
@@ -72,6 +77,17 @@ function AboutForm({ initial }: { initial: AboutRecord }) {
               <Field label="Περιγραφή φωτογραφίας (alt)">{(p) => <input {...p} className={inputCls} value={a.approachImageAlt} onChange={(e) => set('approachImageAlt', e.target.value)} />}</Field>
             </div>
             <PairListEditor label="Σημεία" addLabel="Σημείο" items={a.approach} onChange={(v) => set('approach', v)} />
+          </div>
+        </Panel>
+        <Panel
+          title="Το γραφείο"
+          description="Φωτογραφίες του χώρου σας (γραφείο, τραπέζι εργασίας, μακέτες, υλικά). Η ενότητα εμφανίζεται στη σελίδα «Σχετικά» μόλις ανεβάσετε τουλάχιστον μία φωτογραφία. Αν έχει συμπληρωθεί διεύθυνση στις Ρυθμίσεις, εμφανίζεται κι αυτή."
+        >
+          <div className="flex flex-col gap-6" data-office-editor>
+            <Field label="Τίτλος ενότητας">{(p) => <input {...p} className={inputCls} value={a.officeTitle} onChange={(e) => set('officeTitle', e.target.value)} />}</Field>
+            <StringListEditor label="Κείμενο (προαιρετικό)" multiline addLabel="Παράγραφος" items={a.officeText} onChange={(v) => set('officeText', v)} />
+            <PhotoListEditor folder="about" items={a.officeImages} onChange={(v) => set('officeImages', v)} />
+            {a.officeImages.length === 0 && <p className="text-sm text-muted-paper">Η ενότητα δεν εμφανίζεται ακόμη στον ιστότοπο.</p>}
           </div>
         </Panel>
         <Panel><Toggle checked={a.isPlaceholder} onChange={(v) => set('isPlaceholder', v)} label="Προσωρινό κείμενο" description="Εμφανίζει την ετικέτα «Προσωρινό κείμενο» στο βιογραφικό." /></Panel>

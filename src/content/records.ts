@@ -69,8 +69,14 @@ export interface AboutRecord {
   /** Photo beside «Επαγγελματική προσέγγιση». */
   approachImagePath: string | null
   approachImageAlt: string
+  /** «Το γραφείο»: shown on the About page only once at least one photo is uploaded. */
+  officeTitle: string
+  officeText: string[]
+  officeImages: SlotImage[]
   isPlaceholder: boolean
 }
+
+export const OFFICE_TITLE_DEFAULT = 'Το γραφείο'
 
 /** Editable photos of the home page (page_content key = 'home'). */
 export const HOME_IMAGE_SLOTS = ['hero', 'philosophy', 'architecture', 'interiors', 'material1', 'material2', 'material3'] as const
@@ -197,6 +203,11 @@ export function toDomainAbout(a: AboutRecord, resolve: ImageResolver): AboutCont
     philosophy: a.philosophy,
     approach: a.approach,
     portrait: a.portraitPath ? toImageAsset({ path: a.portraitPath, alt: a.portraitAlt, width: null, height: null }, resolve) : null,
+    office: {
+      title: a.officeTitle.trim() || OFFICE_TITLE_DEFAULT,
+      text: a.officeText.filter((t) => t.trim()),
+      images: a.officeImages.filter((i) => i.path).map((i) => toImageAsset({ ...i, width: null, height: null }, resolve)),
+    },
     approachImage: slotAsset(a.approachImagePath ? { path: a.approachImagePath, alt: a.approachImageAlt } : ABOUT_APPROACH_DEFAULT, resolve),
     isPlaceholder: a.isPlaceholder,
   }

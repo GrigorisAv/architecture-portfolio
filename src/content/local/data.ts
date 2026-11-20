@@ -260,7 +260,7 @@ export const services: Service[] = [
   },
 ]
 
-export const aboutContent: Omit<AboutContent, 'approachImage'> = {
+export const aboutContent: Omit<AboutContent, 'approachImage' | 'office'> = {
   intro: 'Ένα ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού, με προσωπική σχέση με κάθε έργο και κάθε πελάτη.',
   bio: [
     'Εδώ θα παρουσιαστεί το βιογραφικό της αρχιτέκτονα: σπουδές, επαγγελματική διαδρομή και τα έργα ή οι συνεργασίες που διαμόρφωσαν τη ματιά της.',

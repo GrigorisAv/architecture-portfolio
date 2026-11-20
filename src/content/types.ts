@@ -71,6 +71,8 @@ export interface AboutContent {
   approach: { title: string; text: string }[]
   portrait: ImageAsset | null
   approachImage: SiteImage
+  /** Empty images → the section is not shown. */
+  office: { title: string; text: string[]; images: ImageAsset[] }
   isPlaceholder: boolean
 }
 

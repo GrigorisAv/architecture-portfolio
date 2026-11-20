@@ -117,7 +117,46 @@ export function AboutPage() {
         </div>
       </section>
 
+      {about.office.images.length > 0 && <OfficeSection office={about.office} address={settings.address} />}
+
       <ContactCta />
     </div>
+  )
+}
+
+/** Same 16:9 → 4:3 → 4:5 rhythm as the project gallery, so the CMS size guide applies to both. */
+const OFFICE_LAYOUT = [
+  { cls: 'lg:col-span-12', ratio: '16 / 9', sizes: '100vw' },
+  { cls: 'lg:col-span-7', ratio: '4 / 3', sizes: '(min-width: 1024px) 58vw, 100vw' },
+  { cls: 'lg:col-span-4 lg:col-start-9 lg:mt-[clamp(5rem,12vw,12rem)]', ratio: '4 / 5', sizes: '(min-width: 1024px) 33vw, 100vw' },
+]
+
+function OfficeSection({ office, address }: { office: AboutContent['office']; address: string | null }) {
+  return (
+    <section aria-labelledby="office-title" className="bg-stone text-ink" data-office>
+      <div className="page-x mx-auto max-w-[var(--container-page)] py-section">
+        <div className="grid-12 gap-y-8">
+          <Eyebrow className="col-span-4 text-bronze-ink lg:col-span-3 lg:pt-4">Ο χώρος</Eyebrow>
+          <div className="col-span-4 lg:col-span-7">
+            <h2 id="office-title" className="text-h2" data-reveal-text>{office.title}</h2>
+            {office.text.map((t, i) => (
+              <p key={i} className="mt-6 max-w-[38rem] text-lead text-muted-paper" data-reveal-text>{t}</p>
+            ))}
+            {address && (
+              <p className="mt-8 text-muted-paper" data-reveal-text>
+                <span className="eyebrow mr-3 text-bronze-ink">Διεύθυνση</span>
+                {address}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="grid-12 mt-[clamp(3.5rem,8vw,7rem)] gap-y-[clamp(3rem,7vw,6rem)]">
+          {office.images.map((image, i) => {
+            const l = OFFICE_LAYOUT[i % OFFICE_LAYOUT.length]
+            return <EditorialFigure key={`${image.src}-${i}`} className={`col-span-4 ${l.cls}`} image={image} sizes={l.sizes} ratio={l.ratio} tilt={7} shift={i % 2 ? -5 : 5} />
+          })}
+        </div>
+      </div>
+    </section>
   )
 }

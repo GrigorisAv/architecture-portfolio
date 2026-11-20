@@ -62,9 +62,13 @@ test.describe('home', () => {
 
   test('section link scrolls smoothly and marks the active item', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
-    await page.locator('nav[aria-label="Κύρια πλοήγηση"] a[href="/#filosofia"]').click()
+    // The scroll cue goes to the philosophy section (no longer a menu item).
+    await expect(page.locator('nav[aria-label="Κύρια πλοήγηση"] a[href="/#filosofia"]')).toHaveCount(0)
+    await page.getByRole('button', { name: 'Κύλιση στη φιλοσοφία του στούντιο' }).click()
     await expect.poll(() => page.evaluate(() => Math.round(document.getElementById('filosofia')!.getBoundingClientRect().top))).toBeLessThan(120)
-    await expect(page.locator('nav[aria-label="Κύρια πλοήγηση"] a[href="/#filosofia"]')).toHaveAttribute('aria-current', 'location')
+    // Menu items mark the homepage section in view.
+    await page.evaluate(() => document.getElementById('ypiresies')!.scrollIntoView({ behavior: 'instant' }))
+    await expect(page.locator('nav[aria-label="Κύρια πλοήγηση"] a[href="/ypiresies"]')).toHaveAttribute('aria-current', 'location')
   })
 
   test('page transitions never leave an overlay behind', async ({ page }) => {

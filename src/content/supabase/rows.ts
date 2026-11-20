@@ -1,5 +1,5 @@
 /** Database row shapes (snake_case) and their mapping to CMS records. */
-import type { AboutRecord, CategoryRecord, ImageRecord, ProjectRecord, QuoteRecord, ServiceRecord } from '../records'
+import { OFFICE_TITLE_DEFAULT, type AboutRecord, type CategoryRecord, type ImageRecord, type ProjectRecord, type QuoteRecord, type ServiceRecord } from '../records'
 import type { SiteSettings } from '../types'
 
 export interface CategoryRow { id: string; slug: string; label: string; sort_order: number }
@@ -61,6 +61,8 @@ export const toAbout = (c: Partial<AboutRecord> | null): AboutRecord => ({
   intro: c?.intro ?? '', bio: c?.bio ?? [], philosophy: c?.philosophy ?? [], approach: c?.approach ?? [],
   portraitPath: c?.portraitPath ?? null, portraitAlt: c?.portraitAlt ?? '',
   approachImagePath: c?.approachImagePath ?? null, approachImageAlt: c?.approachImageAlt ?? '',
+  officeTitle: c?.officeTitle ?? OFFICE_TITLE_DEFAULT, officeText: Array.isArray(c?.officeText) ? c.officeText : [],
+  officeImages: Array.isArray(c?.officeImages) ? c.officeImages.filter((i) => i && typeof i.path === 'string') : [],
   isPlaceholder: c?.isPlaceholder ?? false,
 })
 export const toQuote = (r: QuoteRow): QuoteRecord => ({

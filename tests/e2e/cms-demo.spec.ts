@@ -57,8 +57,11 @@ test('create, upload, require alt text, publish', async ({ page }) => {
   await expect(page.locator('input').nth(1)).toHaveValue('dokimastiko-ergo-xenona')
   await page.getByRole('button', { name: 'Δημιουργία έργου' }).click()
   await expect(page).toHaveURL(/\/diaxeirisi\/erga\/(?!neo)[\w-]+$/)
+  await expect(page.locator('[data-image-guide]')).toContainText('Πανοραμική 16:9')
   await page.setInputFiles('input[type="file"]', path.join(import.meta.dirname, '../fixtures/photo.jpg'))
   await expect(page.getByText('· λείπει')).toBeVisible({ timeout: 15_000 })
+  await expect(page.locator('[data-fit-warning]').first()).toContainText('photo.jpg')
+  await expect(page.locator('[data-image-slot]').first()).toContainText('Θέση 1')
   await page.locator('[role="switch"]').first().click()
   await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
   await expect(page.getByText('συμπληρώστε περιγραφή (alt)')).toBeVisible()
@@ -100,8 +103,12 @@ test('replace the home hero photo; the sample label disappears', async ({ page }
   await expect(page.locator('h1')).toHaveText('Αρχική σελίδα')
   const hero = page.locator('[data-home-slot="hero"]')
   await expect(hero.getByText('Τώρα: ενδεικτική φωτογραφία.')).toBeVisible()
+  // The recommended size is shown before uploading…
+  await expect(hero.locator('[data-image-spec]')).toContainText('3000×2000')
   await hero.locator('input[type="file"]').setInputFiles(path.join(import.meta.dirname, '../fixtures/photo.jpg'))
   await expect(hero.getByRole('button', { name: 'Επαναφορά ενδεικτικής' })).toBeVisible({ timeout: 15_000 })
+  // …and a too-small file (1200 px) gets a warning, without blocking the upload.
+  await expect(hero.locator('[data-fit-warning]')).toContainText('1200 px')
   // The sample's description no longer applies: a new one is required.
   await expect(hero.locator('textarea')).toHaveValue('')
   await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
@@ -135,4 +142,11 @@ test('footer texts and credit link are editable', async ({ page }) => {
   const footer = page.locator('footer')
   await expect(footer).toContainText('Νέα περιγραφή υποσέλιδου.')
   await expect(footer.getByRole('link', { name: 'Powered by Grigoris Avgoustidis' })).toHaveAttribute('href', 'https://example.gr')
+})
+
+test('photo guide lists every slot of the site', async ({ page }) => {
+  await login(page)
+  await page.locator('nav[aria-label="Διαχείριση"]').getByText('Οδηγός φωτογραφιών').click()
+  await expect(page.locator('h1')).toHaveText('Οδηγός φωτογραφιών')
+  for (const t of ['Κεντρική εικόνα (hero)', 'Εξώφυλλο έργου', 'Φωτογραφία υπηρεσίας', 'Προσωπική φωτογραφία (πορτρέτο)']) await expect(page.locator('td').filter({ hasText: t }).first()).toBeVisible()
 })

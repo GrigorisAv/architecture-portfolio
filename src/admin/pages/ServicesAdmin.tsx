@@ -3,6 +3,7 @@ import type { ServiceRecord } from '../../content/records'
 import { useAdmin } from '../AdminContext'
 import { isValidSlug, slugify } from '../lib/slugify'
 import { useLoad } from '../lib/useLoad'
+import { IMAGE_SPECS } from '../lib/imageGuide'
 import { MediaPicker } from '../ui/MediaPicker'
 import { Button, ConfirmButton, ErrorNote, Field, Loading, PageHeader, Panel, StringListEditor, Toggle } from '../ui/kit'
 import { inputCls, useBeforeUnload, useToast } from '../ui/kitUtils'
@@ -90,7 +91,7 @@ function ServiceForm({ initial, onDone }: { initial: ServiceRecord; onDone: () =
         <div className="md:col-span-2"><Field label="Σύντομη περιγραφή">{(p) => <textarea {...p} className={`${inputCls} min-h-20`} value={s.summary} onChange={(e) => set('summary', e.target.value)} />}</Field></div>
         <div className="md:col-span-2"><StringListEditor label="Κείμενο" multiline addLabel="Παράγραφος" items={s.body} onChange={(v) => set('body', v)} /></div>
         <div className="md:col-span-2"><StringListEditor label="Τι περιλαμβάνει" addLabel="Στοιχείο" items={s.includes} onChange={(v) => set('includes', v)} /></div>
-        <MediaPicker label="Φωτογραφία" folder="services" path={s.imagePath} onChange={(p) => set('imagePath', p)} />
+        <MediaPicker label="Φωτογραφία" folder="services" spec={IMAGE_SPECS.service} path={s.imagePath} onChange={(p) => set('imagePath', p)} />
         <Field label="Περιγραφή φωτογραφίας (alt)">{(p) => <input {...p} className={inputCls} value={s.imageAlt} onChange={(e) => set('imageAlt', e.target.value)} />}</Field>
         <Field label="Σειρά">{(p) => <input {...p} inputMode="numeric" className={inputCls} value={s.sortOrder} onChange={(e) => set('sortOrder', Number(e.target.value) || 0)} />}</Field>
         <Toggle checked={s.isPlaceholder} onChange={(v) => set('isPlaceholder', v)} label="Προσωρινή περιγραφή" description="Εμφανίζει ετικέτα «Προσωρινή περιγραφή»." />

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ABOUT_APPROACH_DEFAULT, isSamplePath, type AboutRecord } from '../../content/records'
 import { useAdmin } from '../AdminContext'
 import { useLoad } from '../lib/useLoad'
+import { IMAGE_SPECS } from '../lib/imageGuide'
 import { MediaPicker } from '../ui/MediaPicker'
 import { Button, ErrorNote, Field, Loading, PageHeader, PairListEditor, Panel, StringListEditor, Toggle } from '../ui/kit'
 import { inputCls, useBeforeUnload, useToast } from '../ui/kitUtils'
@@ -44,7 +45,7 @@ function AboutForm({ initial }: { initial: AboutRecord }) {
         <Panel title="Εισαγωγή & φωτογραφία">
           <div className="grid gap-5 md:grid-cols-2">
             <div className="md:col-span-2"><Field label="Εισαγωγικό κείμενο">{(p) => <textarea {...p} className={`${inputCls} min-h-20`} value={a.intro} onChange={(e) => set('intro', e.target.value)} />}</Field></div>
-            <MediaPicker label="Προσωπική φωτογραφία" folder="about" path={a.portraitPath} onChange={(p) => set('portraitPath', p)} />
+            <MediaPicker label="Προσωπική φωτογραφία" folder="about" spec={IMAGE_SPECS.portrait} path={a.portraitPath} onChange={(p) => set('portraitPath', p)} />
             <Field label="Περιγραφή φωτογραφίας (alt)">{(p) => <input {...p} className={inputCls} value={a.portraitAlt} onChange={(e) => set('portraitAlt', e.target.value)} />}</Field>
           </div>
         </Panel>
@@ -54,8 +55,9 @@ function AboutForm({ initial }: { initial: AboutRecord }) {
           <div className="flex flex-col gap-6">
             <div className="grid gap-5 md:grid-cols-2">
               <MediaPicker
-                label="Φωτογραφία ενότητας (κάθετη, 4:5)"
+                label="Φωτογραφία ενότητας"
                 folder="about"
+                spec={IMAGE_SPECS.aboutApproach}
                 path={a.approachImagePath}
                 canRemove={!!a.approachImagePath && !isSamplePath(a.approachImagePath)}
                 removeLabel="Επαναφορά ενδεικτικής"

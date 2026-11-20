@@ -8,6 +8,7 @@ import { AboutEditor } from './pages/AboutEditor'
 import { Categories } from './pages/Categories'
 import { Dashboard } from './pages/Dashboard'
 import { FooterEditor } from './pages/FooterEditor'
+import { PhotoGuide } from './pages/PhotoGuide'
 import { HomeEditor } from './pages/HomeEditor'
 import { ProjectEditor } from './pages/ProjectEditor'
 import { ProjectsList } from './pages/ProjectsList'
@@ -205,6 +206,7 @@ const NAV = [
   { to: '/diaxeirisi/footer', label: 'Footer' },
   { to: '/diaxeirisi/aitimata', label: 'Αιτήματα προσφοράς' },
   { to: '/diaxeirisi/rythmiseis', label: 'Ρυθμίσεις & SEO' },
+  { to: '/diaxeirisi/odigos-fotografion', label: 'Οδηγός φωτογραφιών' },
 ]
 
 function Shell() {
@@ -260,6 +262,7 @@ function Shell() {
             <Route path="footer" element={<FooterEditor />} />
             <Route path="aitimata" element={<Requests />} />
             <Route path="rythmiseis" element={<Settings />} />
+            <Route path="odigos-fotografion" element={<PhotoGuide />} />
             <Route path="*" element={<p>Η σελίδα δεν βρέθηκε. <Link className="underline" to="/diaxeirisi">Πίνακας ελέγχου</Link></p>} />
           </Routes>
         </div>

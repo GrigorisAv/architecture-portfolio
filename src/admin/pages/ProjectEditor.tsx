@@ -7,6 +7,8 @@ import { isValidSlug, slugify } from '../lib/slugify'
 import { useLoad } from '../lib/useLoad'
 import { Button, ConfirmButton, ErrorNote, Field, Loading, PageHeader, Panel, StatusBadge, StringListEditor, Toggle } from '../ui/kit'
 import { inputCls, useBeforeUnload, useToast } from '../ui/kitUtils'
+import { checkFit, gallerySpec, GENERAL_RULES, IMAGE_SPECS, orientationWarning, readImageSize } from '../lib/imageGuide'
+import { FitWarnings, ImageSpecNote } from '../ui/ImageSpecNote'
 import { thumbUrl } from '../lib/thumb'
 import { SiteLink } from '../ui/SiteLink'
 
@@ -230,15 +232,26 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
   const [uploading, setUploading] = useState<string[]>([])
   const [kind, setKind] = useState<ImageKind>('photo')
   const [over, setOver] = useState(false)
+  const [fitNotes, setFitNotes] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const sorted = [...project.images].sort((a, b) => a.sortOrder - b.sortOrder)
+  const photoIds = sorted.filter((i) => i.kind === 'photo').map((i) => i.id)
 
   const upload = async (files: FileList | File[]) => {
     const list = [...files]
     if (!list.length) return
     setUploading(list.map((f) => f.name))
     let images = [...project.images]
+    const notes: string[] = []
+    let nextPhoto = photoIds.length
     for (const f of list) {
+      // Warn (never block) when a file is too small or oriented wrongly for the frame it will land in.
+      const size = await readImageSize(f)
+      if (size) {
+        const spec = kind !== 'photo' ? IMAGE_SPECS.drawing : nextPhoto === 0 && !project.coverImageId ? IMAGE_SPECS.projectCover : gallerySpec(nextPhoto)
+        for (const w of checkFit(spec, size.width, size.height)) notes.push(`${f.name}: ${w}`)
+      }
+      if (kind === 'photo') nextPhoto++
       try {
         const img = await api.uploadImage(project.id, f, kind)
         images = [...images, img]
@@ -248,6 +261,7 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
       }
       setUploading((u) => u.filter((n) => n !== f.name))
     }
+    setFitNotes(notes)
     toast('success', 'Οι εικόνες ανέβηκαν. Συμπληρώστε την περιγραφή (alt) σε καθεμία.')
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -284,7 +298,34 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
   }
 
   return (
-    <Panel title="Φωτογραφίες & σχέδια" description="Οι αλλαγές στις εικόνες αποθηκεύονται αμέσως. Οι εικόνες μετατρέπονται αυτόματα σε WebP (800/1600/2400 px).">
+    <Panel title="Φωτογραφίες & σχέδια" description="Οι αλλαγές στις εικόνες αποθηκεύονται αμέσως.">
+      <details open className="mb-5 rounded-md border border-stone-deep/60 bg-paper px-4 py-3 text-sm" data-image-guide>
+        <summary className="cursor-pointer font-semibold">Οδηγός διαστάσεων για αυτό το έργο</summary>
+        <div className="mt-3 flex flex-col gap-3">
+          <div>
+            <p className="font-semibold">Εξώφυλλο</p>
+            <ImageSpecNote spec={IMAGE_SPECS.projectCover} className="mt-1" />
+          </div>
+          <div>
+            <p className="font-semibold">Φωτογραφίες: η σελίδα του έργου τις τοποθετεί σε επαναλαμβανόμενο μοτίβο τριών</p>
+            <ol className="mt-1 grid gap-1 sm:grid-cols-3">
+              {[0, 1, 2].map((k) => (
+                <li key={k} className="rounded-md border border-stone-deep/60 bg-white px-3 py-2">
+                  <span className="text-muted-paper">{['1η, 4η, 7η…', '2η, 5η, 8η…', '3η, 6η, 9η…'][k]}</span>
+                  <br />
+                  <span className="font-semibold">{gallerySpec(k).frame}</span> · {gallerySpec(k).ideal}
+                </li>
+              ))}
+            </ol>
+            <p className="mt-1 text-muted-paper">Ταξινομήστε με τα βελάκια ώστε κάθε φωτογραφία να πέφτει σε κάδρο που της ταιριάζει. Με κλικ στο site ανοίγει ολόκληρη.</p>
+          </div>
+          <div>
+            <p className="font-semibold">Σχέδια / κατόψεις / renders</p>
+            <ImageSpecNote spec={IMAGE_SPECS.drawing} className="mt-1" />
+          </div>
+          <p className="text-muted-paper">{GENERAL_RULES}</p>
+        </div>
+      </details>
       <div
         onDragOver={(e) => { e.preventDefault(); setOver(true) }}
         onDragLeave={() => setOver(false)}
@@ -305,6 +346,7 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
           <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple className="sr-only" aria-label="Επιλογή εικόνων" onChange={(e) => e.target.files && upload(e.target.files)} />
         </div>
         <p className="text-xs text-muted-paper">JPEG, PNG, WebP ή AVIF έως 30 MB.</p>
+        <FitWarnings warnings={fitNotes} />
         {uploading.length > 0 && <p role="status" className="text-sm">Ανέβασμα: {uploading.join(', ')}…</p>}
       </div>
 
@@ -315,6 +357,9 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
           {sorted.map((img, i) => {
             const res = api.resolveImage(img.path, img.width)
             const isCover = project.coverImageId ? project.coverImageId === img.id : i === sorted.findIndex((x) => x.kind === 'photo')
+            const photoIndex = photoIds.indexOf(img.id)
+            const slot = img.kind === 'photo' ? gallerySpec(photoIndex) : IMAGE_SPECS.drawing
+            const mismatch = img.width && img.height ? orientationWarning(slot, img.width, img.height) ?? (isCover ? orientationWarning(IMAGE_SPECS.projectCover, img.width, img.height) : null) : null
             return (
               <li key={img.id} className="grid gap-3 rounded-lg border border-stone-deep/60 p-3 md:grid-cols-[7rem_1fr_auto]">
                 <img src={thumbUrl(res)} alt="" className="h-20 w-28 rounded object-cover" loading="lazy" />
@@ -335,6 +380,9 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
                       <option value="drawing">Σχέδιο</option>
                       <option value="render">Render</option>
                     </select>
+                    <span className="text-muted-paper" data-image-slot>
+                      {img.kind === 'photo' ? <>Θέση {photoIndex + 1}: <span className="font-semibold text-ink">{slot.frame}</span> · {slot.ideal}</> : 'Εμφανίζεται ολόκληρο, χωρίς κόψιμο'}
+                    </span>
                     {img.kind === 'photo' && (
                       <label className="inline-flex items-center gap-2">
                         <input type="radio" name="cover" checked={isCover} onChange={() => onCover(img.id)} className="accent-ink" />
@@ -342,6 +390,7 @@ function ImageManager({ project, onImages, onCover }: { project: ProjectRecord; 
                       </label>
                     )}
                   </div>
+                  {mismatch && <p className="text-sm text-bronze-ink" data-fit-warning>⚠ {mismatch} Μετακινήστε τη σε άλλη θέση ή αντικαταστήστε τη.</p>}
                 </div>
                 <div className="flex items-start gap-1">
                   <Button variant="ghost" className="px-2" aria-label="Μετακίνηση πάνω" disabled={i === 0} onClick={() => move(i, -1)}>↑</Button>

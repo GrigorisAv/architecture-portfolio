@@ -2,18 +2,19 @@ import { useState } from 'react'
 import { HOME_DEFAULTS, HOME_IMAGE_SLOTS, isSamplePath, type HomeImageSlot, type HomeRecord, type SlotImage } from '../../content/records'
 import { useAdmin } from '../AdminContext'
 import { useLoad } from '../lib/useLoad'
+import { IMAGE_SPECS } from '../lib/imageGuide'
 import { MediaPicker } from '../ui/MediaPicker'
 import { Button, ErrorNote, Field, Loading, PageHeader, Panel } from '../ui/kit'
 import { inputCls, useBeforeUnload, useToast } from '../ui/kitUtils'
 
-const SLOT_INFO: Record<HomeImageSlot, { section: string; label: string; hint: string }> = {
-  hero: { section: 'Πρώτη εικόνα', label: 'Κεντρική εικόνα (hero)', hint: 'Η πρώτη, ολοσέλιδη εικόνα του ιστότοπου. Οριζόντια φωτογραφία, ιδανικά 2400 px πλάτος και πάνω. Χρησιμοποιείται και στις κοινοποιήσεις (Facebook, Viber κ.λπ.).' },
-  philosophy: { section: 'Ενότητα «Φιλοσοφία»', label: 'Φωτογραφία φιλοσοφίας', hint: 'Κάθετη φωτογραφία (αναλογία 4:5).' },
-  architecture: { section: 'Ενότητα «Πεδία»', label: 'Αρχιτεκτονική', hint: 'Οριζόντια φωτογραφία (4:3), ιδανικά εξωτερικό κτιρίου.' },
-  interiors: { section: 'Ενότητα «Πεδία»', label: 'Εσωτερικοί χώροι', hint: 'Οριζόντια φωτογραφία (3:2), ιδανικά εσωτερικός χώρος.' },
-  material1: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Πρώτη εικόνα · Ξύλο · Μέταλλο', hint: 'Οριζόντια (5:4).' },
-  material2: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Δεύτερη εικόνα · Διαφάνεια · Νερό', hint: 'Κάθετη (3:4).' },
-  material3: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Τρίτη εικόνα · Πέτρα · Φως', hint: 'Οριζόντια (4:3).' },
+const SLOT_INFO: Record<HomeImageSlot, { section: string; label: string }> = {
+  hero: { section: 'Πρώτη εικόνα', label: 'Κεντρική εικόνα (hero)' },
+  philosophy: { section: 'Ενότητα «Φιλοσοφία»', label: 'Φωτογραφία φιλοσοφίας' },
+  architecture: { section: 'Ενότητα «Πεδία»', label: 'Αρχιτεκτονική' },
+  interiors: { section: 'Ενότητα «Πεδία»', label: 'Εσωτερικοί χώροι' },
+  material1: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Πρώτη εικόνα · Ξύλο · Μέταλλο' },
+  material2: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Δεύτερη εικόνα · Διαφάνεια · Νερό' },
+  material3: { section: 'Ενότητα «Ύλη & λεπτομέρεια»', label: 'Τρίτη εικόνα · Πέτρα · Φως' },
 }
 
 export function HomeEditor() {
@@ -74,14 +75,13 @@ function HomeForm({ initial }: { initial: HomeRecord }) {
                     label={info.label}
                     folder="home"
                     path={img.path}
+                    spec={IMAGE_SPECS[slot]}
                     canRemove={!sample}
                     removeLabel="Επαναφορά ενδεικτικής"
                     // A new photo needs its own description; reverting restores the sample's.
                     onChange={(p) => setSlot(slot, p ? { path: p, alt: sample ? '' : img.alt } : HOME_DEFAULTS.images[slot])}
                   />
-                  <p className="text-sm text-muted-paper">
-                    {info.hint} {sample && <span className="font-semibold text-bronze-ink">Τώρα: ενδεικτική φωτογραφία.</span>}
-                  </p>
+                  {sample && <p className="text-sm font-semibold text-bronze-ink">Τώρα: ενδεικτική φωτογραφία.</p>}
                 </div>
                 <Field label="Περιγραφή φωτογραφίας (alt)" required hint="Τι δείχνει η φωτογραφία, για άτομα με προβλήματα όρασης και για τη Google." error={!img.alt.trim() ? 'Υποχρεωτικό πεδίο' : undefined}>
                   {(p) => <textarea {...p} className={`${inputCls} min-h-20`} value={img.alt} onChange={(e) => setSlot(slot, { ...img, alt: e.target.value })} />}

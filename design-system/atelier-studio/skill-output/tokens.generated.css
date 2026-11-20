@@ -1,0 +1,41 @@
+/* Design Tokens - Auto-generated */
+/* Do not edit directly - modify tokens.json instead */
+
+/* === PRIMITIVES === */
+:root {
+
+}
+
+/* === SEMANTIC === */
+:root {
+  --color-primary: #171717;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #404040;
+  --color-on-secondary: #FFFFFF;
+  --color-accent: #A16207;
+  --color-on-accent: #FFFFFF;
+  --color-background: #FFFFFF;
+  --color-foreground: #171717;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #171717;
+  --color-muted: #E8ECF0;
+  --color-muted-foreground: #475569;
+  --color-border: #E5E5E5;
+  --color-destructive: #DC2626;
+  --color-on-destructive: #FFFFFF;
+  --color-ring: #171717;
+  --font-heading: Cinzel, serif;
+  --font-body: "Josefin Sans", sans-serif;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+}
+
+/* === COMPONENTS === */
+:root {
+
+}

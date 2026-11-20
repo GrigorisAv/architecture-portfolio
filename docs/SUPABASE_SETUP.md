@@ -12,7 +12,8 @@
 2. Όνομα: `atelier-studio` · Region: **Central EU (Frankfurt)** · ισχυρός κωδικός βάσης (φυλάξτε τον).
 
 ## 2. Βάση δεδομένων
-**SQL Editor → New query**. Εκτελέστε **με αυτή τη σειρά** το περιεχόμενο των αρχείων:
+**SQL Editor → New query** → επικολλήστε ολόκληρο το `supabase/setup-all.sql` → **Run** (μία φορά).
+Περιέχει όλα τα παρακάτω με τη σωστή σειρά. Εναλλακτικά, εκτελέστε ένα-ένα **με αυτή τη σειρά**:
 1. `supabase/migrations/20261120000001_schema.sql`
 2. `supabase/migrations/20261120000002_policies.sql`
 3. `supabase/migrations/20261120000003_storage.sql`

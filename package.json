@@ -17,7 +17,8 @@
     "test:e2e": "playwright test --trace off",
     "test:db": "bash scripts/test-db.sh",
     "test": "npm run test:unit && npm run test:e2e",
-    "test:supabase-mode": "bash scripts/test-supabase-mode.sh"
+    "test:supabase-mode": "bash scripts/test-supabase-mode.sh",
+    "supabase:bundle": "node -e \"const fs=require('fs');const m=fs.readdirSync('supabase/migrations').sort().map(f=>'\\n-- ===================== supabase/migrations/'+f+' =====================\\n'+fs.readFileSync('supabase/migrations/'+f,'utf8'));fs.writeFileSync('supabase/setup-all.sql','-- ATELIER STUDIO: πλήρης εγκατάσταση βάσης για Supabase (εκτελέστε ΜΙΑ φορά στο SQL Editor).\\n'+m.join('')+'\\n-- ===================== supabase/seed.sql =====================\\n'+fs.readFileSync('supabase/seed.sql','utf8'))\""
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",

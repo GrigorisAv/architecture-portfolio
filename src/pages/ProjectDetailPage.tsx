@@ -43,7 +43,7 @@ export function ProjectDetailPage() {
     ...(category ? { genre: category.label } : {}),
     ...(project.year ? { dateCreated: String(project.year) } : {}),
     ...(project.location ? { locationCreated: project.location } : {}),
-    creator: { '@type': 'Organization', name: 'ATELIER STUDIO', url: absoluteUrl('/') },
+    creator: { '@type': 'Organization', name: 'DS Architect', url: absoluteUrl('/') },
   })
   useJsonLd('breadcrumbs', {
     '@context': 'https://schema.org',

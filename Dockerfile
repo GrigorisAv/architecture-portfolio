@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# ATELIER STUDIO: production image (used by Railway; works on any Docker host).
+# DS Architect: production image (used by Railway; works on any Docker host).
 
 # 1) Build + prerender. The Playwright image ships the Chromium build that prerendering needs.
 #    Keep this tag equal to the "playwright" version in package.json.

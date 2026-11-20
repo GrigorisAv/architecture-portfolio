@@ -81,3 +81,30 @@ test('categories in use cannot be deleted; settings reach the site', async ({ pa
   await page.goto('/sxetika')
   await expect(page.locator('h1')).toHaveText('Όνομα Δοκιμής')
 })
+
+test('replace the home hero photo; the sample label disappears', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#arxi picture img')).toHaveAttribute('src', /hero-dusk-villa/)
+  await login(page)
+  await page.locator('nav[aria-label="Διαχείριση"]').getByText('Αρχική σελίδα').click()
+  await expect(page.locator('h1')).toHaveText('Αρχική σελίδα')
+  const hero = page.locator('[data-home-slot="hero"]')
+  await expect(hero.getByText('Τώρα: ενδεικτική φωτογραφία.')).toBeVisible()
+  await hero.locator('input[type="file"]').setInputFiles(path.join(import.meta.dirname, '../fixtures/photo.jpg'))
+  await expect(hero.getByRole('button', { name: 'Επαναφορά ενδεικτικής' })).toBeVisible({ timeout: 15_000 })
+  // The sample's description no longer applies: a new one is required.
+  await expect(hero.locator('textarea')).toHaveValue('')
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('Συμπληρώστε την περιγραφή (alt)')).toBeVisible()
+  await hero.locator('textarea').fill('Η νέα κατοικία της αρχιτέκτονα στο φως του απογεύματος')
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('Οι φωτογραφίες της αρχικής αποθηκεύτηκαν')).toBeVisible()
+
+  await page.goto('/')
+  const img = page.locator('#arxi picture img')
+  await expect(img).toHaveAttribute('alt', 'Η νέα κατοικία της αρχιτέκτονα στο φως του απογεύματος')
+  await expect(img).toHaveAttribute('src', /^data:image\//)
+  await expect(page.locator('[data-hero-caption]')).not.toContainText('Ενδεικτική')
+  // Other sections still show (and label) their sample photos.
+  await expect(page.locator('#filosofia figcaption')).toContainText('Ενδεικτική φωτογραφία')
+})

@@ -1,4 +1,4 @@
-# Αρχιτεκτονική έργου — ATELIER STUDIO
+# Αρχιτεκτονική έργου — DS Architect
 
 ## Δομή
 
@@ -30,7 +30,7 @@ assets-src/photos/            Πρωτότυπες φωτογραφίες → `n
 
 | Διαδρομή | Σελίδα | Loader (μέσω `content`) |
 |---|---|---|
-| `/` | Αρχική | featured έργα, κατηγορίες, υπηρεσίες, ρυθμίσεις |
+| `/` | Αρχική | featured έργα, κατηγορίες, υπηρεσίες, ρυθμίσεις, φωτογραφίες αρχικής |
 | `/erga?katigoria=<slug>` | Έργα με φίλτρο | έργα, κατηγορίες |
 | `/erga/:slug` | Έργο | έργο, επόμενο έργο, κατηγορίες (404 αν δεν υπάρχει) |
 | `/ypiresies#<slug>` | Υπηρεσίες | υπηρεσίες |
@@ -63,6 +63,10 @@ Supabase sender (insert σε `quote_requests` μέσω Edge Function με rate l
 - `src/admin/`: εφαρμογή διαχείρισης (ξεχωριστό chunk). `api/` με δύο υλοποιήσεις του `AdminApi`.
 - Φωτογραφίες: μετατρέπονται στον browser σε WebP 800/1600/2400 px και αποθηκεύονται ως
   `media/projects/<id>/<uuid>-<w>.webp`. Τα ενδεικτικά έργα χρησιμοποιούν `local:<key>` (bundled).
+- Φωτογραφίες αρχικής (hero, φιλοσοφία, πεδία, ύλη): `page_content` με `key = 'home'`
+  (`HomeRecord`, διαχείριση «Αρχική σελίδα»). Η φωτογραφία της «Επαγγελματικής προσέγγισης»
+  ανήκει στο `page_content 'about'`. Ό,τι λείπει παίρνει τις ενδεικτικές φωτογραφίες (`HOME_DEFAULTS`),
+  που στον ιστότοπο φέρουν την ένδειξη «Ενδεικτική φωτογραφία»· οι δικές της φωτογραφίες όχι.
 - SQL: `supabase/migrations/` (schema, RLS, storage), `supabase/seed.sql` (από `npm run seed:generate`),
   `supabase/tests/` (μόνο τοπικά). Οδηγίες: `docs/SUPABASE_SETUP.md`.
 

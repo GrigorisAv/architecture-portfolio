@@ -1,14 +1,9 @@
 import { useRef } from 'react'
 import { Picture } from '../../components/media/Picture'
+import type { SiteImage } from '../../content/types'
 import { gsap, MOTION, useGSAP } from '../../lib/gsap'
 import { introAllowed } from '../../lib/prerender'
 import { scrollToSection } from '../../lib/scroll'
-
-const heroImage = {
-  src: 'hero-dusk-villa',
-  alt: 'Σύγχρονη κατοικία το σούρουπο: σκούρος ορθογώνιος όγκος με κάθετα φωτισμένα ανοίγματα πάνω από λευκή βάση και κήπο',
-  focal: '50% 55%',
-}
 
 /**
  * A. Cinematic hero
@@ -17,7 +12,7 @@ const heroImage = {
  *   editorial frame on the right while the stage shifts from charcoal to ivory.
  * - Mobile: load reveal + gentle parallax. Reduced motion: static final state.
  */
-export function Hero() {
+export function Hero({ image }: { image: SiteImage }) {
   const root = useRef<HTMLElement>(null)
 
   useGSAP(
@@ -90,7 +85,7 @@ export function Hero() {
           <div data-hero-reveal className="absolute inset-0">
             <div data-hero-parallax className="absolute inset-0 will-change-transform">
               <div data-hero-zoom className="media-frame absolute inset-0">
-                <Picture image={heroImage} sizes="100vw" priority />
+                <Picture image={image} sizes="100vw" priority />
               </div>
             </div>
             <div
@@ -107,14 +102,14 @@ export function Hero() {
           aria-hidden="true"
           className="invisible absolute bottom-[4.5%] right-[5%] hidden w-[48%] items-baseline justify-between text-muted-paper opacity-0 lg:flex"
         >
-          <span className="eyebrow">Πλάκα I · Κατοικία, σούρουπο</span>
-          <span className="eyebrow">Ενδεικτική φωτογραφία</span>
+          <span className="eyebrow">Πλάκα I{image.isSample && ' · Κατοικία, σούρουπο'}</span>
+          {image.isSample && <span className="eyebrow">Ενδεικτική φωτογραφία</span>}
         </div>
 
         <div className="page-x relative z-10 mx-auto flex h-full max-w-[var(--container-page)] flex-col justify-end pb-[clamp(2.5rem,7vh,5rem)] pt-32">
           <p data-hero-fade data-hero-muted className="eyebrow mb-8 text-stone">
             <span className="hidden sm:inline">
-              ATELIER STUDIO <span aria-hidden="true" className="mx-3 inline-block h-px w-8 translate-y-[-0.25em] bg-current align-middle opacity-60" />
+              DS Architect <span aria-hidden="true" className="mx-3 inline-block h-px w-8 translate-y-[-0.25em] bg-current align-middle opacity-60" />
             </span>
             Αρχιτεκτονική &amp; Εσωτερικοί Χώροι
           </p>

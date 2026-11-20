@@ -14,7 +14,7 @@ const keepHead = head
   .split('\n')
   .filter((l) => !/<meta charset|<meta name="viewport"/.test(l))
   .join('\n')
-  .replace(/<title>[\s\S]*?<\/title>/, '<title>Atelier Studio</title>')
+  .replace(/<title>[\s\S]*?<\/title>/, '<title>DS Architect</title>')
 await writeFile(path.join(DIR, 'index.html'), `${keepHead.trim()}\n${body.trim()}\n`)
 
 // Preview hosts don't need server fallbacks; unused photos are skipped.

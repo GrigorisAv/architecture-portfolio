@@ -3,7 +3,7 @@
  * Supabase is used when VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY are set; its code (and supabase-js)
  * is loaded lazily, so sites without a backend don't ship it.
  */
-import type { AboutContent, Project, ProjectCategory, QuoteRequest, QuoteSubmitResult, Service, SiteSettings } from './types'
+import type { AboutContent, HomeContent, Project, ProjectCategory, QuoteRequest, QuoteSubmitResult, Service, SiteSettings } from './types'
 import { localQuoteSender, localRepository } from './local/localRepository'
 import { CMS_MODE } from '../lib/env'
 
@@ -15,6 +15,7 @@ export interface ContentRepository {
   listServices(): Promise<Service[]>
   getSiteSettings(): Promise<SiteSettings>
   getAboutContent(): Promise<AboutContent>
+  getHomeContent(): Promise<HomeContent>
   /** Next published project in portfolio order (wraps around). */
   getAdjacentProject(slug: string): Promise<Project | null>
 }
@@ -40,6 +41,7 @@ function lazyRepository(): ContentRepository {
     listServices: call('listServices'),
     getSiteSettings: call('getSiteSettings'),
     getAboutContent: call('getAboutContent'),
+    getHomeContent: call('getHomeContent'),
     getAdjacentProject: call('getAdjacentProject'),
   } as ContentRepository
 }

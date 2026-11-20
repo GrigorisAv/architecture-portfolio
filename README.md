@@ -1,4 +1,4 @@
-# ATELIER STUDIO: Αρχιτεκτονική & Εσωτερικοί Χώροι
+# DS Architect: Αρχιτεκτονική & Εσωτερικοί Χώροι
 
 Ιστότοπος portfolio με ιδιωτικό CMS.
 React 19 · TypeScript · Vite · Tailwind CSS v4 · GSAP + ScrollTrigger · React Router · Supabase.

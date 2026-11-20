@@ -1,6 +1,6 @@
 import type { ContentRepository, QuoteRequestSender } from '../repository'
 import { localResolver } from '../imagePaths'
-import { publishedSorted, toDomainAbout, toDomainCategory, toDomainProject, toDomainService } from '../records'
+import { publishedSorted, toDomainAbout, toDomainCategory, toDomainHome, toDomainProject, toDomainService } from '../records'
 import { CMS_MODE } from '../../lib/env'
 import { commit, getState, uid } from './demoStore'
 
@@ -38,6 +38,9 @@ export const localRepository: ContentRepository = {
   },
   async getAboutContent() {
     return toDomainAbout(getState().about, localResolver)
+  },
+  async getHomeContent() {
+    return toDomainHome(getState().home, localResolver)
   },
 }
 

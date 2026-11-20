@@ -82,8 +82,8 @@ export function SiteHeader() {
             onClick={(e) => handleNavClick(e, '/', pathname, closeMenu)}
             className="group -my-2 flex min-h-11 items-center gap-3 justify-self-start py-2"
           >
-            <span className="flex items-baseline gap-3"><span className="font-display text-[1.45rem] leading-none tracking-[0.14em] transition-opacity duration-300 group-hover:opacity-80">ATELIER</span>
-            <span className="text-[0.66rem] font-semibold leading-none tracking-[0.34em] text-bronze-light"> STUDIO</span></span>
+            <span className="flex items-baseline gap-3"><span className="font-display text-[1.45rem] leading-none tracking-[0.14em] transition-opacity duration-300 group-hover:opacity-80">DS</span>
+            <span className="text-[0.66rem] font-semibold leading-none tracking-[0.34em] uppercase text-bronze-light"> Architect</span></span>
             <span className="visually-hidden">, αρχική σελίδα</span>
           </Link>
 

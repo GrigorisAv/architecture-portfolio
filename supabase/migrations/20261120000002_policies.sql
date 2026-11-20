@@ -1,4 +1,4 @@
--- ATELIER STUDIO: Row Level Security
+-- DS Architect: Row Level Security
 -- Public (anon) can read published content only. Only the single admin can write.
 -- Quote requests: no direct table access for the public; submissions go through an RPC.
 

@@ -1,7 +1,8 @@
--- ATELIER STUDIO: πλήρης εγκατάσταση βάσης για Supabase (εκτελέστε ΜΙΑ φορά στο SQL Editor).
+-- DS Architect: πλήρης εγκατάσταση βάσης για Supabase (εκτελέστε ΜΙΑ φορά στο SQL Editor).
+-- Παράγεται από: npm run supabase:bundle
 
 -- ===================== supabase/migrations/20261120000001_schema.sql =====================
--- ATELIER STUDIO: content schema (Phase 3)
+-- DS Architect: content schema (Phase 3)
 -- Target: Supabase (Postgres 15+). Uses auth.users / auth.uid() provided by Supabase Auth.
 
 -- ---------------------------------------------------------------------------
@@ -137,7 +138,7 @@ create table public.page_content (
 
 create table public.site_settings (
   id              smallint primary key default 1 check (id = 1),
-  studio_name     text not null default 'ATELIER STUDIO',
+  studio_name     text not null default 'DS Architect',
   tagline         text not null default '',
   architect_name  text,
   architect_role  text not null default '',
@@ -185,7 +186,7 @@ create trigger quote_requests_updated_at before update on public.quote_requests 
 insert into public.site_settings (id) values (1) on conflict do nothing;
 
 -- ===================== supabase/migrations/20261120000002_policies.sql =====================
--- ATELIER STUDIO: Row Level Security
+-- DS Architect: Row Level Security
 -- Public (anon) can read published content only. Only the single admin can write.
 -- Quote requests: no direct table access for the public; submissions go through an RPC.
 
@@ -326,7 +327,7 @@ revoke all on function public.admin_dashboard_stats() from public, anon;
 grant execute on function public.admin_dashboard_stats() to authenticated;
 
 -- ===================== supabase/migrations/20261120000003_storage.sql =====================
--- ATELIER STUDIO: media storage
+-- DS Architect: media storage
 -- Public-read bucket for project/service photos; only the admin can upload, replace or delete.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -347,7 +348,7 @@ create policy "media: admin delete" on storage.objects
   for delete to authenticated using (bucket_id = 'media' and public.is_admin());
 
 -- ===================== supabase/migrations/20261120000004_grants.sql =====================
--- ATELIER STUDIO: explicit table privileges.
+-- DS Architect: explicit table privileges.
 -- Newer Supabase projects no longer grant table access to the API roles automatically,
 -- so every privilege the site needs is granted here, explicitly and minimally.
 -- RLS policies (migration 2) still decide WHICH rows each role may see or change.
@@ -445,6 +446,6 @@ insert into public.services (slug, title, summary, body, includes, image_path, i
 
 insert into public.page_content (key, content) values ('about', '{"intro":"Ένα ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού, με προσωπική σχέση με κάθε έργο και κάθε πελάτη.","bio":["Εδώ θα παρουσιαστεί το βιογραφικό της αρχιτέκτονα: σπουδές, επαγγελματική διαδρομή και τα έργα ή οι συνεργασίες που διαμόρφωσαν τη ματιά της.","Η ενότητα θα συμπληρωθεί με πραγματικά στοιχεία πριν από τη δημοσίευση του ιστότοπου."],"philosophy":[{"title":"Ο χώρος ως εμπειρία","text":"Ένα κτίριο δεν κρίνεται μόνο από την εικόνα του, αλλά από το πώς το ζει κανείς κάθε μέρα."},{"title":"Λιγότερα, καλύτερα","text":"Λίγα υλικά, προσεκτικές λεπτομέρειες και ήρεμες αναλογίες αντέχουν στον χρόνο."},{"title":"Σεβασμός στον τόπο","text":"Το φως, το κλίμα και η μνήμη κάθε τόπου είναι η αφετηρία κάθε πρότασης."}],"approach":[{"title":"Προσωπική συνεργασία","text":"Η αρχιτέκτονας παρακολουθεί προσωπικά κάθε έργο, από την πρώτη συνάντηση έως την παράδοση."},{"title":"Διαφάνεια","text":"Σαφή στάδια, κατανοητά σχέδια και ρεαλιστικός προϋπολογισμός σε κάθε βήμα."},{"title":"Συνεργάτες","text":"Ένα δίκτυο μηχανικών και τεχνιτών που μοιράζεται την ίδια φροντίδα για την ποιότητα."}],"portrait":null,"isPlaceholder":true}'::jsonb) on conflict (key) do nothing;
 
-update public.site_settings set studio_name = 'ATELIER STUDIO', tagline = 'Η τέχνη του χώρου', architect_name = null, architect_role = 'Αρχιτέκτων Μηχανικός', email = null, phone = null, address = null, instagram = null, seo_title = 'ATELIER STUDIO — Αρχιτεκτονική & Εσωτερικοί Χώροι', seo_description = 'ATELIER STUDIO: ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού. Κατοικίες, ανακαινίσεις και επαγγελματικοί χώροι με μεσογειακό φως και καθαρές αναλογίες.' where id = 1;
+update public.site_settings set studio_name = 'DS Architect', tagline = 'Η τέχνη του χώρου', architect_name = null, architect_role = 'Αρχιτέκτων Μηχανικός', email = null, phone = null, address = null, instagram = null, seo_title = 'DS Architect — Αρχιτεκτονική & Εσωτερικοί Χώροι', seo_description = 'DS Architect: ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού. Κατοικίες, ανακαινίσεις και επαγγελματικοί χώροι με μεσογειακό φως και καθαρές αναλογίες.' where id = 1;
 
 commit;

@@ -69,7 +69,7 @@ async function render(route) {
           if (v?.startsWith(location.origin)) el.setAttribute(attr, v.slice(location.origin.length) || '/')
         }
       }
-      // Adjacent text nodes (e.g. "© {year} ATELIER") merge when serialized; React's SSR separates them with
+      // Adjacent text nodes (e.g. "© {year} DS Architect") merge when serialized; React's SSR separates them with
       // <!-- --> so hydration can match them one to one. Do the same.
       const walker = document.createTreeWalker(document.getElementById('root'), NodeFilter.SHOW_TEXT)
       const pairs = []

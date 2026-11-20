@@ -9,7 +9,7 @@
 
 ## 1. Νέο project
 1. https://supabase.com/dashboard → **New project**.
-2. Όνομα: `atelier-studio` · Region: **Central EU (Frankfurt)** · ισχυρός κωδικός βάσης (φυλάξτε τον).
+2. Όνομα: `ds-architect` · Region: **Central EU (Frankfurt)** · ισχυρός κωδικός βάσης (φυλάξτε τον).
 
 ## 2. Βάση δεδομένων
 **SQL Editor → New query** → επικολλήστε ολόκληρο το `supabase/setup-all.sql` → **Run** (μία φορά).

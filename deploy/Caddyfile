@@ -1,4 +1,4 @@
-# ATELIER STUDIO: static hosting (Railway or any container host).
+# DS Architect: static hosting (Railway or any container host).
 # Railway terminates TLS and routes to $PORT; Caddy serves the prerendered build from /srv.
 {
 	admin off

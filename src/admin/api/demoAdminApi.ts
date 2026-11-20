@@ -8,9 +8,9 @@ import { AdminError, type AdminApi, type AdminSession } from './types'
  * Browser-only CMS for previews. Nothing leaves this browser.
  * Uploaded photos are kept as WebP data URLs (≤1600 px) in localStorage, so they survive reloads and new tabs.
  */
-const SESSION_KEY = 'atelier-studio:demo-session'
+const SESSION_KEY = 'ds-architect:demo-session'
 const listeners = new Set<(s: AdminSession | null) => void>()
-const demoSession: AdminSession = { userId: 'demo', email: 'demo@atelier.local' }
+const demoSession: AdminSession = { userId: 'demo', email: 'demo@ds-architect.local' }
 
 const readSession = (): AdminSession | null => {
   try {
@@ -172,6 +172,12 @@ export const demoAdminApi: AdminApi = {
     return { path: url, width, height }
   },
 
+  async getHome() {
+    return delay(structuredClone(getState().home))
+  },
+  async saveHome(home) {
+    commit((d) => (d.home = home))
+  },
   async getAbout() {
     return delay(structuredClone(getState().about))
   },

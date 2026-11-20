@@ -1,4 +1,4 @@
--- ATELIER STUDIO: content schema (Phase 3)
+-- DS Architect: content schema (Phase 3)
 -- Target: Supabase (Postgres 15+). Uses auth.users / auth.uid() provided by Supabase Auth.
 
 -- ---------------------------------------------------------------------------
@@ -134,7 +134,7 @@ create table public.page_content (
 
 create table public.site_settings (
   id              smallint primary key default 1 check (id = 1),
-  studio_name     text not null default 'ATELIER STUDIO',
+  studio_name     text not null default 'DS Architect',
   tagline         text not null default '',
   architect_name  text,
   architect_role  text not null default '',

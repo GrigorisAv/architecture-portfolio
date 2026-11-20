@@ -260,7 +260,7 @@ export const services: Service[] = [
   },
 ]
 
-export const aboutContent: AboutContent = {
+export const aboutContent: Omit<AboutContent, 'approachImage'> = {
   intro: 'Ένα ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού, με προσωπική σχέση με κάθε έργο και κάθε πελάτη.',
   bio: [
     'Εδώ θα παρουσιαστεί το βιογραφικό της αρχιτέκτονα: σπουδές, επαγγελματική διαδρομή και τα έργα ή οι συνεργασίες που διαμόρφωσαν τη ματιά της.',
@@ -281,7 +281,7 @@ export const aboutContent: AboutContent = {
 }
 
 export const siteSettings: SiteSettings = {
-  studioName: 'ATELIER STUDIO',
+  studioName: 'DS Architect',
   tagline: 'Η τέχνη του χώρου',
   architectName: null,
   architectRole: 'Αρχιτέκτων Μηχανικός',
@@ -290,8 +290,8 @@ export const siteSettings: SiteSettings = {
   address: null,
   instagram: null,
   seo: {
-    title: 'ATELIER STUDIO — Αρχιτεκτονική & Εσωτερικοί Χώροι',
+    title: 'DS Architect — Αρχιτεκτονική & Εσωτερικοί Χώροι',
     description:
-      'ATELIER STUDIO: ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού. Κατοικίες, ανακαινίσεις και επαγγελματικοί χώροι με μεσογειακό φως και καθαρές αναλογίες.',
+      'DS Architect: ανεξάρτητο στούντιο αρχιτεκτονικής και εσωτερικού σχεδιασμού. Κατοικίες, ανακαινίσεις και επαγγελματικοί χώροι με μεσογειακό φως και καθαρές αναλογίες.',
   },
 }

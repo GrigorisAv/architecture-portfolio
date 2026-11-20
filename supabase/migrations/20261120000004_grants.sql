@@ -1,4 +1,4 @@
--- ATELIER STUDIO: explicit table privileges.
+-- DS Architect: explicit table privileges.
 -- Newer Supabase projects no longer grant table access to the API roles automatically,
 -- so every privilege the site needs is granted here, explicitly and minimally.
 -- RLS policies (migration 2) still decide WHICH rows each role may see or change.

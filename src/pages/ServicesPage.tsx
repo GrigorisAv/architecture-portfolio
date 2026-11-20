@@ -25,7 +25,7 @@ export function ServicesPage() {
   useEditorialReveals(root)
   useSeo({
     title: 'Υπηρεσίες',
-    description: 'Αρχιτεκτονικές μελέτες, interior design, ανακαινίσεις και σχεδιασμός επαγγελματικών χώρων από το ATELIER STUDIO.',
+    description: 'Αρχιτεκτονικές μελέτες, interior design, ανακαινίσεις και σχεδιασμός επαγγελματικών χώρων από το DS Architect.',
   })
 
   return (

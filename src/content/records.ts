@@ -2,7 +2,7 @@
  * CMS records: the shape stored in the database (camelCase mirror of the SQL tables).
  * Both data sources (Supabase, demo) speak records; `toDomain*` turns them into what pages render.
  */
-import type { AboutContent, ImageAsset, Project, ProjectCategory, PublishStatus, QuoteRequest, Service, SiteSettings } from './types'
+import type { AboutContent, HomeContent, ImageAsset, Project, ProjectCategory, PublishStatus, QuoteRequest, Service, SiteSettings } from './types'
 
 export type ImageKind = 'photo' | 'drawing' | 'render'
 
@@ -66,7 +66,45 @@ export interface AboutRecord {
   approach: { title: string; text: string }[]
   portraitPath: string | null
   portraitAlt: string
+  /** Photo beside «Επαγγελματική προσέγγιση». */
+  approachImagePath: string | null
+  approachImageAlt: string
   isPlaceholder: boolean
+}
+
+/** Editable photos of the home page (page_content key = 'home'). */
+export const HOME_IMAGE_SLOTS = ['hero', 'philosophy', 'architecture', 'interiors', 'material1', 'material2', 'material3'] as const
+export type HomeImageSlot = (typeof HOME_IMAGE_SLOTS)[number]
+export interface SlotImage {
+  path: string
+  alt: string
+}
+export interface HomeRecord {
+  images: Record<HomeImageSlot, SlotImage>
+}
+
+/** Bundled sample photos: used until the architect uploads her own. */
+export const HOME_DEFAULTS: HomeRecord = {
+  images: {
+    hero: { path: 'local:hero-dusk-villa', alt: 'Σύγχρονη κατοικία το σούρουπο: σκούρος ορθογώνιος όγκος με κάθετα φωτισμένα ανοίγματα πάνω από λευκή βάση και κήπο' },
+    philosophy: { path: 'local:oak-stair-detail', alt: 'Λευκό κλιμακοστάσιο με δρύινα σκαλοπάτια, μαύρο μεταλλικό κιγκλίδωμα και κρεμαστά φωτιστικά' },
+    architecture: { path: 'local:pool-villa', alt: 'Σύγχρονη διώροφη κατοικία με επάλληλες λευκές πλάκες, μεγάλα υαλοστάσια και πισίνα στον κήπο' },
+    interiors: { path: 'local:dining-stair-interior', alt: 'Τραπεζαρία με σκούρο ξύλινο τραπέζι μπροστά από γυάλινο διαχωριστικό, ξύλινη επένδυση και ανοιχτό κλιμακοστάσιο' },
+    material1: { path: 'local:timber-black-house', alt: 'Κατοικία με ξύλινο κουτί εισόδου, μαύρη μεταλλική επένδυση και κήπο με αμμοχάλικο' },
+    material2: { path: 'local:glass-stair-pool', alt: 'Αιωρούμενη ξύλινη σκάλα μπροστά από γυάλινη πρόσοψη με θέα στην πισίνα' },
+    material3: { path: 'local:wood-wall-dining', alt: 'Καθιστικό και τραπεζαρία που ανοίγουν σε ξύλινο deck, με επένδυση ξύλου και πέτρινο τζάκι' },
+  },
+}
+export const ABOUT_APPROACH_DEFAULT: SlotImage = { path: 'local:minimal-white-room', alt: 'Λιτό λευκό δωμάτιο με σκούρο καναπέ, φυτό, συρταριέρα και επιδαπέδιο φωτιστικό' }
+
+/** Fills slots missing from stored content (older rows, partial saves) with the defaults. */
+export function normalizeHome(c: Partial<HomeRecord> | null | undefined): HomeRecord {
+  const images = { ...HOME_DEFAULTS.images }
+  for (const slot of HOME_IMAGE_SLOTS) {
+    const v = c?.images?.[slot]
+    if (v && typeof v.path === 'string' && v.path) images[slot] = { path: v.path, alt: typeof v.alt === 'string' ? v.alt : '' }
+  }
+  return { images }
 }
 
 export type QuoteStatus = 'new' | 'read' | 'replied' | 'archived'
@@ -141,8 +179,28 @@ export function toDomainAbout(a: AboutRecord, resolve: ImageResolver): AboutCont
     philosophy: a.philosophy,
     approach: a.approach,
     portrait: a.portraitPath ? toImageAsset({ path: a.portraitPath, alt: a.portraitAlt, width: null, height: null }, resolve) : null,
+    approachImage: slotAsset(a.approachImagePath ? { path: a.approachImagePath, alt: a.approachImageAlt } : ABOUT_APPROACH_DEFAULT, resolve),
     isPlaceholder: a.isPlaceholder,
   }
+}
+
+/** Sample (bundled) photos are labelled «Ενδεικτική φωτογραφία» on the site; uploads are not. */
+export const isSamplePath = (path: string) => path.startsWith('local:')
+
+function slotAsset(img: SlotImage, resolve: ImageResolver): ImageAsset & { isSample: boolean } {
+  return { ...toImageAsset({ ...img, width: null, height: null }, resolve), isSample: isSamplePath(img.path) }
+}
+
+const SAMPLE_FOCAL: Partial<Record<HomeImageSlot, string>> = { hero: '50% 55%', philosophy: '50% 40%', material1: '40% 50%' }
+
+export function toDomainHome(r: HomeRecord, resolve: ImageResolver): HomeContent {
+  const images = {} as HomeContent['images']
+  for (const slot of HOME_IMAGE_SLOTS) images[slot] = slotAsset(r.images[slot], resolve)
+  // Crops tuned for the sample photos; uploads are centred.
+  for (const [slot, focal] of Object.entries(SAMPLE_FOCAL) as [HomeImageSlot, string][]) {
+    if (r.images[slot].path === HOME_DEFAULTS.images[slot].path) images[slot].focal = focal
+  }
+  return { images }
 }
 
 export type { SiteSettings }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { AboutRecord } from '../../content/records'
+import { ABOUT_APPROACH_DEFAULT, isSamplePath, type AboutRecord } from '../../content/records'
 import { useAdmin } from '../AdminContext'
 import { useLoad } from '../lib/useLoad'
 import { MediaPicker } from '../ui/MediaPicker'
@@ -50,7 +50,28 @@ function AboutForm({ initial }: { initial: AboutRecord }) {
         </Panel>
         <Panel title="Βιογραφικό"><StringListEditor label="Παράγραφοι" multiline addLabel="Παράγραφος" items={a.bio} onChange={(v) => set('bio', v)} /></Panel>
         <Panel title="Σχεδιαστική φιλοσοφία"><PairListEditor label="Αρχές" addLabel="Αρχή" items={a.philosophy} onChange={(v) => set('philosophy', v)} /></Panel>
-        <Panel title="Επαγγελματική προσέγγιση"><PairListEditor label="Σημεία" addLabel="Σημείο" items={a.approach} onChange={(v) => set('approach', v)} /></Panel>
+        <Panel title="Επαγγελματική προσέγγιση">
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-5 md:grid-cols-2">
+              <MediaPicker
+                label="Φωτογραφία ενότητας (κάθετη, 4:5)"
+                folder="about"
+                path={a.approachImagePath}
+                canRemove={!!a.approachImagePath && !isSamplePath(a.approachImagePath)}
+                removeLabel="Επαναφορά ενδεικτικής"
+                onChange={(p) =>
+                  setA((x) =>
+                    p
+                      ? { ...x, approachImagePath: p, approachImageAlt: x.approachImagePath && isSamplePath(x.approachImagePath) ? '' : x.approachImageAlt }
+                      : { ...x, approachImagePath: ABOUT_APPROACH_DEFAULT.path, approachImageAlt: ABOUT_APPROACH_DEFAULT.alt },
+                  )
+                }
+              />
+              <Field label="Περιγραφή φωτογραφίας (alt)">{(p) => <input {...p} className={inputCls} value={a.approachImageAlt} onChange={(e) => set('approachImageAlt', e.target.value)} />}</Field>
+            </div>
+            <PairListEditor label="Σημεία" addLabel="Σημείο" items={a.approach} onChange={(v) => set('approach', v)} />
+          </div>
+        </Panel>
         <Panel><Toggle checked={a.isPlaceholder} onChange={(v) => set('isPlaceholder', v)} label="Προσωρινό κείμενο" description="Εμφανίζει την ετικέτα «Προσωρινό κείμενο» στο βιογραφικό." /></Panel>
       </div>
     </>

@@ -11,7 +11,7 @@ const sections = [
 ]
 
 export function PrivacyPage() {
-  useSeo({ title: 'Πολιτική Απορρήτου', description: 'Πώς χρησιμοποιούνται τα προσωπικά δεδομένα που υποβάλλονται μέσω του ιστότοπου ATELIER STUDIO.' })
+  useSeo({ title: 'Πολιτική Απορρήτου', description: 'Πώς χρησιμοποιούνται τα προσωπικά δεδομένα που υποβάλλονται μέσω του ιστότοπου DS Architect.' })
   return (
     <>
       <PageIntro

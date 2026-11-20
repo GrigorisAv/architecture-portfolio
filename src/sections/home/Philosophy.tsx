@@ -3,6 +3,7 @@ import { EditorialFigure } from '../../components/editorial/EditorialFigure'
 import { useEditorialReveals } from '../../components/editorial/useEditorialReveals'
 import { Words } from '../../components/editorial/WordReveal'
 import { Eyebrow } from '../../components/ui/Eyebrow'
+import type { SiteImage } from '../../content/types'
 
 const principles = [
   { numeral: 'I', title: 'Φως', text: 'Ο προσανατολισμός, οι σκιές και οι αντανακλάσεις οργανώνουν τον χώρο πριν από κάθε άλλη απόφαση.' },
@@ -10,7 +11,7 @@ const principles = [
   { numeral: 'III', title: 'Αναλογία', text: 'Ήρεμες γεωμετρίες και μετρημένες αποστάσεις, ώστε κάθε χώρος να μοιάζει αυτονόητος.' },
 ]
 
-export function Philosophy() {
+export function Philosophy({ image }: { image: SiteImage }) {
   const root = useRef<HTMLElement>(null)
   useEditorialReveals(root)
 
@@ -33,7 +34,7 @@ export function Philosophy() {
         <div className="grid-12 mt-[clamp(4rem,10vw,9rem)] gap-y-16">
           <EditorialFigure
             className="col-span-4 lg:col-span-5"
-            image={{ src: 'oak-stair-detail', alt: 'Λευκό κλιμακοστάσιο με δρύινα σκαλοπάτια, μαύρο μεταλλικό κιγκλίδωμα και κρεμαστά φωτιστικά', focal: '50% 40%' }}
+            image={image}
             sizes="(min-width: 1024px) 40vw, 100vw"
             ratio="4 / 5"
             tilt={8}
@@ -41,7 +42,7 @@ export function Philosophy() {
             caption={
               <>
                 <span>Λεπτομέρεια κλιμακοστασίου</span>
-                <span className="eyebrow">Ενδεικτική φωτογραφία</span>
+                {image.isSample && <span className="eyebrow">Ενδεικτική φωτογραφία</span>}
               </>
             }
           />

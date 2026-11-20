@@ -20,13 +20,14 @@ const routes: RouteObject[] = [
           index: true,
           element: <HomePage />,
           loader: async () => {
-            const [featured, categories, services, settings] = await Promise.all([
+            const [featured, categories, services, settings, home] = await Promise.all([
               content.listFeaturedProjects(),
               content.listCategories(),
               content.listServices(),
               content.getSiteSettings(),
+              content.getHomeContent(),
             ])
-            return { featured, categories, services, settings }
+            return { featured, categories, services, settings, home }
           },
         },
         {

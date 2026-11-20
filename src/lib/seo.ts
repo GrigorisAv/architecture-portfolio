@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SITE_URL } from './env'
 
-const SITE = 'ATELIER STUDIO'
+const SITE = 'DS Architect'
 const DEFAULT_IMAGE = 'images/hero-dusk-villa-1600.jpg'
 
 function upsertMeta(attr: 'name' | 'property', key: string, value: string | null) {

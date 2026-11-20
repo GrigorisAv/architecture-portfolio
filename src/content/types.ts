@@ -70,7 +70,16 @@ export interface AboutContent {
   philosophy: { title: string; text: string }[]
   approach: { title: string; text: string }[]
   portrait: ImageAsset | null
+  approachImage: SiteImage
   isPlaceholder: boolean
+}
+
+/** A CMS-managed site photo; `isSample` = bundled sample photo, labelled as such on the site. */
+export type SiteImage = ImageAsset & { isSample: boolean }
+
+/** table: page_content (key = 'home') */
+export interface HomeContent {
+  images: Record<'hero' | 'philosophy' | 'architecture' | 'interiors' | 'material1' | 'material2' | 'material3', SiteImage>
 }
 
 export type ProjectType = 'nea-katoikia' | 'anakainisi' | 'interior' | 'epaggelmatikos' | 'allo'

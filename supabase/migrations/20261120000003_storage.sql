@@ -1,4 +1,4 @@
--- ATELIER STUDIO: media storage
+-- DS Architect: media storage
 -- Public-read bucket for project/service photos; only the admin can upload, replace or delete.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

@@ -1,4 +1,4 @@
-import type { AboutRecord, CategoryRecord, ImageKind, ImageRecord, ImageResolver, ProjectRecord, QuoteRecord, QuoteStatus, ServiceRecord } from '../../content/records'
+import type { AboutRecord, HomeRecord, CategoryRecord, ImageKind, ImageRecord, ImageResolver, ProjectRecord, QuoteRecord, QuoteStatus, ServiceRecord } from '../../content/records'
 import type { SiteSettings } from '../../content/types'
 
 export interface AdminSession {
@@ -13,6 +13,8 @@ export interface DashboardStats {
   requestsNew: number
   requestsTotal: number
 }
+
+export type MediaFolder = 'services' | 'about' | 'home'
 
 /** Error whose message is safe to show to the admin (Greek). */
 export class AdminError extends Error {}
@@ -49,7 +51,10 @@ export interface AdminApi {
   saveService(service: ServiceRecord): Promise<ServiceRecord>
   deleteService(id: string): Promise<void>
   /** Uploads a standalone image (service photo, portrait) and returns its stored path. */
-  uploadMedia(folder: 'services' | 'about', file: File): Promise<{ path: string; width: number; height: number }>
+  uploadMedia(folder: MediaFolder, file: File): Promise<{ path: string; width: number; height: number }>
+
+  getHome(): Promise<HomeRecord>
+  saveHome(home: HomeRecord): Promise<void>
 
   getAbout(): Promise<AboutRecord>
   saveAbout(about: AboutRecord): Promise<void>

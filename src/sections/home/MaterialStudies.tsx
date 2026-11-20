@@ -1,10 +1,12 @@
 import { useRef } from 'react'
 import { EditorialFigure } from '../../components/editorial/EditorialFigure'
 import { useEditorialReveals } from '../../components/editorial/useEditorialReveals'
+import { SampleLabel } from '../../components/editorial/SampleLabel'
 import { Eyebrow } from '../../components/ui/Eyebrow'
+import type { HomeContent } from '../../content/types'
 
 /** C. Editorial project reveals: asymmetric plates revealed with offset + perspective. */
-export function MaterialStudies() {
+export function MaterialStudies({ images }: { images: Pick<HomeContent['images'], 'material1' | 'material2' | 'material3'> }) {
   const root = useRef<HTMLElement>(null)
   useEditorialReveals(root)
 
@@ -23,33 +25,33 @@ export function MaterialStudies() {
         <div className="grid-12 mt-[clamp(4rem,9vw,8rem)] gap-y-16 lg:gap-y-0">
           <EditorialFigure
             className="col-span-4 lg:col-span-6"
-            image={{ src: 'timber-black-house', alt: 'Κατοικία με ξύλινο κουτί εισόδου, μαύρη μεταλλική επένδυση και κήπο με αμμοχάλικο', focal: '40% 50%' }}
+            image={images.material1}
             sizes="(min-width: 1024px) 48vw, 100vw"
             ratio="5 / 4"
             tilt={10}
             shift={7}
             captionClassName="text-muted-paper"
-            caption={<><span>Ξύλο · Μέταλλο</span><span className="eyebrow">Ενδεικτική</span></>}
+            caption={<><span>Ξύλο · Μέταλλο</span><SampleLabel image={images.material1} short /></>}
           />
           <EditorialFigure
             className="col-span-4 lg:col-span-4 lg:col-start-9 lg:mt-[22vh]"
-            image={{ src: 'glass-stair-pool', alt: 'Αιωρούμενη ξύλινη σκάλα μπροστά από γυάλινη πρόσοψη με θέα στην πισίνα' }}
+            image={images.material2}
             sizes="(min-width: 1024px) 32vw, 100vw"
             ratio="3 / 4"
             tilt={8}
             shift={-8}
             captionClassName="text-muted-paper"
-            caption={<><span>Διαφάνεια · Νερό</span><span className="eyebrow">Ενδεικτική</span></>}
+            caption={<><span>Διαφάνεια · Νερό</span><SampleLabel image={images.material2} short /></>}
           />
           <EditorialFigure
             className="col-span-4 lg:col-span-5 lg:col-start-3 lg:-mt-[6vh]"
-            image={{ src: 'wood-wall-dining', alt: 'Καθιστικό και τραπεζαρία που ανοίγουν σε ξύλινο deck, με επένδυση ξύλου και πέτρινο τζάκι' }}
+            image={images.material3}
             sizes="(min-width: 1024px) 40vw, 100vw"
             ratio="4 / 3"
             tilt={9}
             shift={6}
             captionClassName="text-muted-paper"
-            caption={<><span>Πέτρα · Φως</span><span className="eyebrow">Ενδεικτική</span></>}
+            caption={<><span>Πέτρα · Φως</span><SampleLabel image={images.material3} short /></>}
           />
           <blockquote className="col-span-4 self-end lg:col-span-3 lg:col-start-9 lg:pb-8" data-reveal-text>
             <p className="font-display text-[clamp(1.5rem,2.2vw,2.1rem)] font-light italic leading-snug">

@@ -1,4 +1,4 @@
-# ATELIER STUDIO — Design System (Master)
+# DS Architect — Design System (Master)
 
 > **Source of truth for every visual change.**
 > Before building or changing a page, read this file, then check `pages/<page>.md`.
@@ -169,7 +169,7 @@ From the skill's GSAP presets + UX rules, adapted:
 **Navigation (desktop), client-specified pill form:** a fully rounded floating bar, the one place where
 the orthogonal 0–2px corner rule is deliberately broken. Background `#1B1B1B` at 94% + blur (45% ink over the
 home hero at the top), hairline `rgba(245,242,235,0.07)`, soft drop shadow. Three-column grid: wordmark left
-(serif «ATELIER» 1.45rem / tracking 0.14em + bronze-light «STUDIO» 0.66rem / tracking 0.34em, baseline-aligned),
+(serif «DS» 1.45rem / tracking 0.14em + bronze-light uppercase «Architect» 0.66rem / tracking 0.34em, baseline-aligned; footer and favicon use a plain gable (roof) mark),
 links centered (Manrope 0.9rem semibold, 65% paper → paper), CTA right as an ivory pill
 (`--color-paper` fill, ink text, sentence case; hover → stone). Hover/focus indicator = a `paper/8%` pill that
 slides between links and rests on the active one; the active item also gets a 4px dot below it.

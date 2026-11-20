@@ -4,10 +4,11 @@ import { EditorialFigure } from '../../components/editorial/EditorialFigure'
 import { useEditorialReveals } from '../../components/editorial/useEditorialReveals'
 import { Eyebrow } from '../../components/ui/Eyebrow'
 import { ArrowRight } from '../../components/ui/icons'
-import type { Service } from '../../content/types'
+import { SampleLabel } from '../../components/editorial/SampleLabel'
+import type { HomeContent, Service } from '../../content/types'
 
 /** Αρχιτεκτονική & Interior Design + service index (services come from the CMS-ready repository). */
-export function Disciplines({ services }: { services: Service[] }) {
+export function Disciplines({ services, images }: { services: Service[]; images: Pick<HomeContent['images'], 'architecture' | 'interiors'> }) {
   const root = useRef<HTMLElement>(null)
   useEditorialReveals(root)
 
@@ -27,12 +28,12 @@ export function Disciplines({ services }: { services: Service[] }) {
         <div className="grid-12 mt-[clamp(3.5rem,8vw,7rem)] gap-y-10">
           <EditorialFigure
             className="col-span-4 lg:col-span-7"
-            image={{ src: 'pool-villa', alt: 'Σύγχρονη διώροφη κατοικία με επάλληλες λευκές πλάκες, μεγάλα υαλοστάσια και πισίνα στον κήπο' }}
+            image={images.architecture}
             sizes="(min-width: 1024px) 58vw, 100vw"
             ratio="4 / 3"
             tilt={9}
             shift={5}
-            caption={<><span>Κέλυφος και τοπίο</span><span className="eyebrow">Ενδεικτική φωτογραφία</span></>}
+            caption={<><span>Κέλυφος και τοπίο</span><SampleLabel image={images.architecture} /></>}
           />
           <div className="col-span-4 flex flex-col justify-end lg:col-span-4 lg:col-start-9 lg:pb-16">
             <p className="eyebrow text-bronze-ink" data-reveal-text>Αρχιτεκτονική</p>
@@ -54,12 +55,12 @@ export function Disciplines({ services }: { services: Service[] }) {
           </div>
           <EditorialFigure
             className="order-1 col-span-4 lg:order-2 lg:col-span-7 lg:col-start-6"
-            image={{ src: 'dining-stair-interior', alt: 'Τραπεζαρία με σκούρο ξύλινο τραπέζι μπροστά από γυάλινο διαχωριστικό, ξύλινη επένδυση και ανοιχτό κλιμακοστάσιο' }}
+            image={images.interiors}
             sizes="(min-width: 1024px) 58vw, 100vw"
             ratio="3 / 2"
             tilt={9}
             shift={-5}
-            caption={<><span>Φως και διαφάνεια</span><span className="eyebrow">Ενδεικτική φωτογραφία</span></>}
+            caption={<><span>Φως και διαφάνεια</span><SampleLabel image={images.interiors} /></>}
           />
         </div>
 

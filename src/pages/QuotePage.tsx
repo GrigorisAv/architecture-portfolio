@@ -46,7 +46,7 @@ type Phase = 'idle' | 'submitting' | 'done'
 export function QuotePage() {
   useSeo({
     title: 'Αίτημα Προσφοράς',
-    description: 'Περιγράψτε το έργο σας (νέα κατοικία, ανακαίνιση, εσωτερικός ή επαγγελματικός χώρος) και ζητήστε προσφορά από το ATELIER STUDIO.',
+    description: 'Περιγράψτε το έργο σας (νέα κατοικία, ανακαίνιση, εσωτερικός ή επαγγελματικός χώρος) και ζητήστε προσφορά από το DS Architect.',
   })
 
   const [values, setValues] = useState<QuoteRequest>(emptyQuote)

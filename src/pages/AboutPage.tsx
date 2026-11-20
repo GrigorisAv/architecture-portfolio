@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useLoaderData } from 'react-router-dom'
 import { EditorialFigure } from '../components/editorial/EditorialFigure'
+import { SampleLabel } from '../components/editorial/SampleLabel'
 import { useEditorialReveals } from '../components/editorial/useEditorialReveals'
 import { Picture } from '../components/media/Picture'
 import { Eyebrow } from '../components/ui/Eyebrow'
@@ -49,7 +50,7 @@ export function AboutPage() {
               <h1 id="about-title" data-about-intro className="mt-8 text-display">
                 {name ?? <span className="text-muted-paper">[Όνομα Αρχιτέκτονα]</span>}
               </h1>
-              <p data-about-intro className="eyebrow mt-5 text-muted-paper">{settings.architectRole} · Ιδρύτρια του ATELIER STUDIO</p>
+              <p data-about-intro className="eyebrow mt-5 text-muted-paper">{settings.architectRole} · Ιδρύτρια του DS Architect</p>
               <p data-about-intro className="mt-10 max-w-xl font-display text-[clamp(1.5rem,2.4vw,2.25rem)] font-light leading-snug">{about.intro}</p>
             </div>
           </div>
@@ -92,11 +93,11 @@ export function AboutPage() {
           <div className="grid-12 gap-y-14">
             <EditorialFigure
               className="col-span-4 lg:col-span-5"
-              image={{ src: 'minimal-white-room', alt: 'Λιτό λευκό δωμάτιο με σκούρο καναπέ, φυτό, συρταριέρα και επιδαπέδιο φωτιστικό' }}
+              image={about.approachImage}
               sizes="(min-width: 1024px) 40vw, 100vw"
               ratio="4 / 5"
               tilt={8}
-              caption={<><span>Ησυχία και φως</span><span className="eyebrow">Ενδεικτική φωτογραφία</span></>}
+              caption={<><span>Ησυχία και φως</span><SampleLabel image={about.approachImage} /></>}
             />
             <div className="col-span-4 lg:col-span-6 lg:col-start-7 lg:pt-16">
               <Eyebrow className="text-bronze-ink">Επαγγελματική προσέγγιση</Eyebrow>

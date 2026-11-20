@@ -1,11 +1,26 @@
 import { useRef, useState } from 'react'
 import { useAdmin } from '../AdminContext'
+import type { MediaFolder } from '../api/types'
 import { thumbUrl } from '../lib/thumb'
 import { Button } from './kit'
 import { useToast } from './kitUtils'
 
 /** Single image field (service photo, portrait): preview + replace + remove. */
-export function MediaPicker({ label, folder, path, onChange }: { label: string; folder: 'services' | 'about'; path: string | null; onChange: (path: string | null) => void }) {
+export function MediaPicker({
+  label,
+  folder,
+  path,
+  onChange,
+  removeLabel = 'Αφαίρεση',
+  canRemove = true,
+}: {
+  label: string
+  folder: MediaFolder
+  path: string | null
+  onChange: (path: string | null) => void
+  removeLabel?: string
+  canRemove?: boolean
+}) {
   const { api } = useAdmin()
   const toast = useToast()
   const [busy, setBusy] = useState(false)
@@ -32,7 +47,7 @@ export function MediaPicker({ label, folder, path, onChange }: { label: string; 
         </div>
         <div className="flex flex-wrap gap-2">
           <Button busy={busy} onClick={() => input.current?.click()}>{path ? 'Αντικατάσταση' : 'Ανέβασμα εικόνας'}</Button>
-          {path && <Button variant="ghost" onClick={() => onChange(null)}>Αφαίρεση</Button>}
+          {path && canRemove && <Button variant="ghost" onClick={() => onChange(null)}>{removeLabel}</Button>}
         </div>
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" aria-label={label} onChange={(e) => pick(e.target.files?.[0])} />
       </div>

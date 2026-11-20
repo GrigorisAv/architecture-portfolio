@@ -59,7 +59,9 @@ export const fromSettings = (s: SiteSettings): SettingsRow => ({
 })
 export const toAbout = (c: Partial<AboutRecord> | null): AboutRecord => ({
   intro: c?.intro ?? '', bio: c?.bio ?? [], philosophy: c?.philosophy ?? [], approach: c?.approach ?? [],
-  portraitPath: c?.portraitPath ?? null, portraitAlt: c?.portraitAlt ?? '', isPlaceholder: c?.isPlaceholder ?? false,
+  portraitPath: c?.portraitPath ?? null, portraitAlt: c?.portraitAlt ?? '',
+  approachImagePath: c?.approachImagePath ?? null, approachImageAlt: c?.approachImageAlt ?? '',
+  isPlaceholder: c?.isPlaceholder ?? false,
 })
 export const toQuote = (r: QuoteRow): QuoteRecord => ({
   id: r.id, fullName: r.full_name, email: r.email, phone: r.phone, projectType: r.project_type, area: r.area,

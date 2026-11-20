@@ -2,7 +2,7 @@
  * Browser-only CMS store for previews (VITE_CMS_DEMO=true) and the default static content source.
  * Seeded from data.ts. In demo mode, admin edits persist in localStorage *of this browser only*.
  */
-import type { AboutRecord, CategoryRecord, ImageRecord, ProjectRecord, QuoteRecord, ServiceRecord } from '../records'
+import { ABOUT_APPROACH_DEFAULT, HOME_DEFAULTS, normalizeHome, type AboutRecord, type HomeRecord, type CategoryRecord, type ImageRecord, type ProjectRecord, type QuoteRecord, type ServiceRecord } from '../records'
 import type { SiteSettings } from '../types'
 import { CMS_MODE } from '../../lib/env'
 import { aboutContent, categories, projects, services, siteSettings } from './data'
@@ -13,11 +13,12 @@ export interface DemoState {
   projects: ProjectRecord[]
   services: ServiceRecord[]
   about: AboutRecord
+  home: HomeRecord
   settings: SiteSettings
   quotes: QuoteRecord[]
 }
 
-const KEY = 'atelier-studio:demo-cms:v1'
+const KEY = 'ds-architect:demo-cms:v1'
 
 export function seedState(): DemoState {
   const now = new Date().toISOString()
@@ -72,8 +73,11 @@ export function seedState(): DemoState {
       approach: aboutContent.approach,
       portraitPath: null,
       portraitAlt: '',
+      approachImagePath: ABOUT_APPROACH_DEFAULT.path,
+      approachImageAlt: ABOUT_APPROACH_DEFAULT.alt,
       isPlaceholder: aboutContent.isPlaceholder,
     },
+    home: structuredClone(HOME_DEFAULTS),
     settings: structuredClone(siteSettings),
     quotes: [],
   }
@@ -91,7 +95,13 @@ export function getState(): DemoState {
       const raw = localStorage.getItem(KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as DemoState
-        if (parsed.version === 1) state = parsed
+        if (parsed.version === 1) {
+          // Older saved states predate editable home/about photos.
+          parsed.home = normalizeHome(parsed.home)
+          parsed.about.approachImagePath ??= ABOUT_APPROACH_DEFAULT.path
+          parsed.about.approachImageAlt ??= ABOUT_APPROACH_DEFAULT.alt
+          state = parsed
+        }
       }
     } catch {
       /* storage unavailable or corrupt: fall back to seed */

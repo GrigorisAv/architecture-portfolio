@@ -45,7 +45,7 @@ export function ArchitectProfile({ settings }: { settings: SiteSettings }) {
             <h2 id="architektonas-title" className="mt-8 text-h2" data-reveal-text>
               {settings.architectName ? name : <span className="text-muted-paper">[{name}]</span>}
             </h2>
-            <p className="eyebrow mt-4 text-muted-paper" data-reveal-text>{settings.architectRole} · Ιδρύτρια του ATELIER STUDIO</p>
+            <p className="eyebrow mt-4 text-muted-paper" data-reveal-text>{settings.architectRole} · Ιδρύτρια του DS Architect</p>
 
             <div className="mt-10 border-l border-bronze pl-6" data-reveal-text>
               <PlaceholderBadge tone="light" label="Προσωρινό κείμενο" />

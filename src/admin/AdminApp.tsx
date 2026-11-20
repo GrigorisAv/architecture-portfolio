@@ -7,6 +7,7 @@ import { AdminContext, useAdmin } from './AdminContext'
 import { AboutEditor } from './pages/AboutEditor'
 import { Categories } from './pages/Categories'
 import { Dashboard } from './pages/Dashboard'
+import { HomeEditor } from './pages/HomeEditor'
 import { ProjectEditor } from './pages/ProjectEditor'
 import { ProjectsList } from './pages/ProjectsList'
 import { Requests } from './pages/Requests'
@@ -23,7 +24,7 @@ export default function AdminApp() {
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'Διαχείριση — ATELIER STUDIO'
+    document.title = 'Διαχείριση — DS Architect'
     const robots = document.createElement('meta')
     robots.name = 'robots'
     robots.content = 'noindex, nofollow'
@@ -135,7 +136,7 @@ function Login({ api }: { api: AdminApi }) {
   return (
     <Centered>
       <form onSubmit={submit} className="w-full max-w-sm rounded-xl border border-stone-deep/70 bg-white p-8 shadow-[0_20px_60px_-30px_rgb(0_0_0/0.3)]" noValidate>
-        <p className="font-display text-xl tracking-[0.14em]">ATELIER <span className="font-sans text-[0.6rem] font-semibold tracking-[0.34em] text-bronze-ink">STUDIO</span></p>
+        <p className="font-display text-xl tracking-[0.14em]">DS <span className="font-sans text-[0.6rem] font-semibold uppercase tracking-[0.34em] text-bronze-ink">Architect</span></p>
         <h1 className="mt-8 font-display text-3xl font-light">Σύνδεση διαχείρισης</h1>
         <p className="mt-2 text-sm text-muted-paper">{demo ? 'Λειτουργία επίδειξης: δεν απαιτούνται στοιχεία.' : 'Μόνο για τη διαχειρίστρια του ιστότοπου.'}</p>
 
@@ -195,6 +196,7 @@ function UpdatePassword({ api }: { api: AdminApi }) {
 /* ---------------- Shell ---------------- */
 const NAV = [
   { to: '/diaxeirisi', label: 'Πίνακας ελέγχου', end: true },
+  { to: '/diaxeirisi/arxiki', label: 'Αρχική σελίδα' },
   { to: '/diaxeirisi/erga', label: 'Έργα' },
   { to: '/diaxeirisi/katigories', label: 'Κατηγορίες' },
   { to: '/diaxeirisi/ypiresies', label: 'Υπηρεσίες' },
@@ -212,7 +214,7 @@ function Shell() {
       <aside className="bg-ink text-paper lg:sticky lg:top-0 lg:h-svh">
         <div className="flex items-center justify-between px-5 py-5">
           <Link to="/diaxeirisi" className="font-display text-lg tracking-[0.14em]">
-            ATELIER <span className="font-sans text-[0.55rem] font-semibold tracking-[0.34em] text-bronze-light">CMS</span>
+            DS <span className="font-sans text-[0.55rem] font-semibold tracking-[0.34em] text-bronze-light">CMS</span>
           </Link>
           <button type="button" className="rounded-md px-3 py-2 text-sm lg:hidden" aria-expanded={open} aria-controls="admin-nav" onClick={() => setOpen((o) => !o)}>
             Μενού
@@ -246,6 +248,7 @@ function Shell() {
         <div className="mx-auto max-w-6xl">
           <Routes>
             <Route index element={<Dashboard />} />
+            <Route path="arxiki" element={<HomeEditor />} />
             <Route path="erga" element={<ProjectsList />} />
             <Route path="erga/neo" element={<ProjectEditor />} />
             <Route path="erga/:id" element={<ProjectEditor />} />

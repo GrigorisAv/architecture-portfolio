@@ -11,8 +11,14 @@ const page = <K extends string>(load: () => Promise<Record<K, React.ComponentTyp
 /** Route loaders call the content repository only, so the CMS swap in Phase 3 is invisible to pages. */
 const routes: RouteObject[] = [
     {
+      id: 'root',
       path: '/',
       element: <RootLayout />,
+      // Footer data (contact details, sample-photo note). Not re-run when moving between pages.
+      loader: async () => {
+        const [settings, samplePhotos] = await Promise.all([content.getSiteSettings(), content.usesSamplePhotos()])
+        return { settings, samplePhotos }
+      },
       errorElement: <RouteError />,
       hydrateFallbackElement: <HydrateFallback />,
       children: [

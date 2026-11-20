@@ -37,6 +37,7 @@ async function handle(route) {
     if (['select', 'order', 'limit', 'offset'].includes(k)) continue;
     const [op, ...rest] = v.split('.'); const val = rest.join('.');
     if (op === 'eq') where.push(`${k} = ${lit(val)}`);
+    if (op === 'like') where.push(`${k} like ${lit(val.replace(/\*/g, '%'))}`);
   }
   const order = url.searchParams.get('order')?.split('.')[0];
   const select = url.searchParams.get('select') || '';

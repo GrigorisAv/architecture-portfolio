@@ -1,6 +1,6 @@
 import type { ContentRepository, QuoteRequestSender } from '../repository'
 import { storageResolver } from '../imagePaths'
-import { normalizeHome, toDomainAbout, toDomainCategory, toDomainHome, toDomainProject, toDomainService } from '../records'
+import { aboutUsesSample, homeUsesSample, normalizeHome, toDomainAbout, toDomainCategory, toDomainHome, toDomainProject, toDomainService } from '../records'
 import type { Project, QuoteSubmitResult } from '../types'
 import { getSupabase, mediaPublicBase } from './client'
 import { PROJECT_SELECT, toAbout, toCategory, toProject, toService, toSettings, type CategoryRow, type ProjectRow, type ServiceRow, type SettingsRow } from './rows'
@@ -60,6 +60,20 @@ export const supabaseRepository: ContentRepository = {
     const { data, error } = await getSupabase().from('page_content').select('content').eq('key', 'about').maybeSingle()
     if (error) fail('about', error)
     return toDomainAbout(toAbout((data?.content as object) ?? null), resolve())
+  },
+  async usesSamplePhotos() {
+    const sb = getSupabase()
+    const [pages, images, services] = await Promise.all([
+      sb.from('page_content').select('key, content'),
+      // Conservative: a draft's sample photo keeps the note too; deleting the sample projects removes it.
+      sb.from('project_images').select('id').like('storage_path', 'local:%').limit(1),
+      sb.from('services').select('id').like('image_path', 'local:%').limit(1),
+    ])
+    if (pages.error) fail('pages', pages.error)
+    if (images.error) fail('images', images.error)
+    if (services.error) fail('services', services.error)
+    const page = (key: string) => ((pages.data as { key: string; content: object }[]).find((p) => p.key === key)?.content ?? null) as never
+    return homeUsesSample(normalizeHome(page('home'))) || aboutUsesSample(toAbout(page('about'))) || images.data.length > 0 || services.data.length > 0
   },
   async getHomeContent() {
     const { data, error } = await getSupabase().from('page_content').select('content').eq('key', 'home').maybeSingle()

@@ -1,13 +1,27 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useRouteLoaderData } from 'react-router-dom'
 import { ctaNav, primaryNav } from '../../config/navigation'
+import type { SiteSettings } from '../../content/types'
 import { CMS_MODE } from '../../lib/env'
 import { Monogram } from '../ui/icons'
 import { handleNavClick } from './navLinkHandler'
 
 const YEAR = new Date().getFullYear()
 
+export interface RootData {
+  settings: SiteSettings
+  samplePhotos: boolean
+}
+
+/** Accepts a full profile URL or a bare handle ("@name" / "name"). */
+const instagramUrl = (v: string) => (/^https?:\/\//.test(v) ? v : `https://www.instagram.com/${v.replace(/^@/, '')}/`)
+const instagramHandle = (v: string) => '@' + v.replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/^@/, '').replace(/\/.*$/, '')
+
 export function SiteFooter() {
   const { pathname } = useLocation()
+  // Undefined only if the root data failed to load: show the neutral fallbacks.
+  const root = useRouteLoaderData('root') as RootData | undefined
+  const s = root?.settings
+  const hasContact = !!(s?.email || s?.phone || s?.address || s?.instagram)
   return (
     <footer className="bg-ink text-paper">
       <div className="page-x mx-auto max-w-[var(--container-page)] pb-10 pt-20">
@@ -36,7 +50,22 @@ export function SiteFooter() {
 
           <div className="col-span-2 lg:col-span-3">
             <p className="eyebrow mb-5 text-bronze-light">Επικοινωνία</p>
-            <p className="text-stone">Τα στοιχεία επικοινωνίας θα προστεθούν σύντομα.</p>
+            {hasContact ? (
+              <ul className="space-y-2.5 text-stone">
+                {s?.email && <li><a href={`mailto:${s.email}`} className="link-draw break-all hover:text-paper">{s.email}</a></li>}
+                {s?.phone && <li><a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} className="link-draw hover:text-paper">{s.phone}</a></li>}
+                {s?.address && <li className="whitespace-pre-line text-muted-ink">{s.address}</li>}
+                {s?.instagram && (
+                  <li>
+                    <a href={instagramUrl(s.instagram)} target="_blank" rel="noopener noreferrer" className="link-draw hover:text-paper">
+                      Instagram · {instagramHandle(s.instagram)}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            ) : (
+              <p className="text-stone">Τα στοιχεία επικοινωνίας θα προστεθούν σύντομα.</p>
+            )}
           </div>
         </div>
 
@@ -51,7 +80,7 @@ export function SiteFooter() {
               </>
             )}
           </p>
-          <p>Οι φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>
+          {(root?.samplePhotos ?? true) && <p>Ορισμένες φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>}
         </div>
       </div>
     </footer>

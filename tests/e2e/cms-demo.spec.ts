@@ -77,9 +77,19 @@ test('categories in use cannot be deleted; settings reach the site', async ({ pa
   await expect(page.locator('li:has(input[value="katoikies"])').getByRole('button', { name: 'Διαγραφή' })).toBeDisabled()
   await page.goto('/diaxeirisi/rythmiseis')
   await page.getByLabel('Ονοματεπώνυμο αρχιτέκτονα').fill('Όνομα Δοκιμής')
+  await page.getByLabel('Email').fill('info@example.gr')
+  await page.getByLabel('Τηλέφωνο').fill('+30 690 000 0000')
   await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('αποθηκεύτηκαν')).toBeVisible()
   await page.goto('/sxetika')
   await expect(page.locator('h1')).toHaveText('Όνομα Δοκιμής')
+  // Contact details from the CMS replace the footer's «coming soon» text.
+  const footer = page.locator('footer')
+  await expect(footer.getByRole('link', { name: 'info@example.gr' })).toHaveAttribute('href', 'mailto:info@example.gr')
+  await expect(footer.getByRole('link', { name: '+30 690 000 0000' })).toHaveAttribute('href', 'tel:+306900000000')
+  await expect(footer).not.toContainText('θα προστεθούν σύντομα')
+  // Sample photos are still in use, so the note stays.
+  await expect(footer).toContainText('ενδεικτικές (Unsplash)')
 })
 
 test('replace the home hero photo; the sample label disappears', async ({ page }) => {

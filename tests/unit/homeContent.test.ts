@@ -21,3 +21,14 @@ test('uploads resolve to storage variants and are not labelled as samples', () =
   assert.equal(home.images.philosophy.src, 'oak-stair-detail')
   assert.equal(home.images.philosophy.focal, '50% 40%')
 })
+
+test('sample-photo note stays until every sample photo is replaced', async () => {
+  const { aboutUsesSample, homeUsesSample } = await import('../../src/content/records.ts')
+  assert.equal(homeUsesSample(HOME_DEFAULTS), true)
+  const own = structuredClone(HOME_DEFAULTS)
+  for (const slot of Object.keys(own.images) as (keyof typeof own.images)[]) own.images[slot] = { path: `home/${slot}`, alt: 'x' }
+  assert.equal(homeUsesSample(own), false)
+  assert.equal(aboutUsesSample({ approachImagePath: null, portraitPath: null }), true)
+  assert.equal(aboutUsesSample({ approachImagePath: 'about/a', portraitPath: null }), false)
+  assert.equal(aboutUsesSample({ approachImagePath: 'local:minimal-white-room', portraitPath: 'about/p' }), true)
+})

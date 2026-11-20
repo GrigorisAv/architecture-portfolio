@@ -16,6 +16,8 @@ export interface ContentRepository {
   getSiteSettings(): Promise<SiteSettings>
   getAboutContent(): Promise<AboutContent>
   getHomeContent(): Promise<HomeContent>
+  /** True while any published page still shows a bundled sample (Unsplash) photo. */
+  usesSamplePhotos(): Promise<boolean>
   /** Next published project in portfolio order (wraps around). */
   getAdjacentProject(slug: string): Promise<Project | null>
 }
@@ -42,6 +44,7 @@ function lazyRepository(): ContentRepository {
     getSiteSettings: call('getSiteSettings'),
     getAboutContent: call('getAboutContent'),
     getHomeContent: call('getHomeContent'),
+    usesSamplePhotos: call('usesSamplePhotos'),
     getAdjacentProject: call('getAdjacentProject'),
   } as ContentRepository
 }

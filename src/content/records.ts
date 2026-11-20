@@ -193,6 +193,14 @@ function slotAsset(img: SlotImage, resolve: ImageResolver): ImageAsset & { isSam
 
 const SAMPLE_FOCAL: Partial<Record<HomeImageSlot, string>> = { hero: '50% 55%', philosophy: '50% 40%', material1: '40% 50%' }
 
+/** Does stored page content still rely on a sample photo (missing slots count: they fall back to samples)? */
+export function homeUsesSample(r: HomeRecord): boolean {
+  return HOME_IMAGE_SLOTS.some((slot) => isSamplePath(r.images[slot].path))
+}
+export function aboutUsesSample(a: Pick<AboutRecord, 'approachImagePath' | 'portraitPath'>): boolean {
+  return !a.approachImagePath || isSamplePath(a.approachImagePath) || (!!a.portraitPath && isSamplePath(a.portraitPath))
+}
+
 export function toDomainHome(r: HomeRecord, resolve: ImageResolver): HomeContent {
   const images = {} as HomeContent['images']
   for (const slot of HOME_IMAGE_SLOTS) images[slot] = slotAsset(r.images[slot], resolve)

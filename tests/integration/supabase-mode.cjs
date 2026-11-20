@@ -39,7 +39,12 @@ async function handle(route) {
     if (op === 'eq') where.push(`${k} = ${lit(val)}`);
   }
   const order = url.searchParams.get('order')?.split('.')[0];
-  const embed = /project_images/.test(url.searchParams.get('select') || '');
+  const select = url.searchParams.get('select') || '';
+  // Like real PostgREST: projects↔project_images has two FKs, so an embed without a hint is ambiguous (HTTP 300).
+  if (table === 'projects' && /project_images\(/.test(select) && !/project_images!/.test(select)) {
+    return route.fulfill({ status: 300, headers, body: JSON.stringify({ code: 'PGRST201', message: 'Could not embed because more than one relationship was found' }) });
+  }
+  const embed = /project_images/.test(select);
   const cols = embed ? `t.*, (select coalesce(json_agg(i order by i.sort_order), '[]') from public.project_images i where i.project_id = t.id) as project_images` : 't.*';
   const rows = JSON.parse(sql(`select coalesce(json_agg(x), '[]') from (select ${cols} from public.${table} t ${where.length ? 'where ' + where.join(' and ') : ''} ${order ? 'order by ' + order : ''}) x;`));
   if ((req.headers()['accept'] || '').includes('vnd.pgrst.object')) {

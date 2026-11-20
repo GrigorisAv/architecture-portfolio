@@ -32,3 +32,4 @@ dist-preview
 dist-supabase-test
 test-results
 playwright-report
+dist-live

@@ -21,7 +21,8 @@ export interface QuoteRow {
   size_sqm: number | string | null; description: string; privacy_consent: boolean; status: QuoteRecord['status']; admin_notes: string | null; created_at: string
 }
 
-export const PROJECT_SELECT = '*, project_images(*)'
+// Two FKs link projects and project_images (images, and the cover): name the one to embed (PostgREST PGRST201 otherwise).
+export const PROJECT_SELECT = '*, project_images!project_images_project_id_fkey(*)'
 
 export const toCategory = (r: CategoryRow): CategoryRecord => ({ id: r.id, slug: r.slug, label: r.label, sortOrder: r.sort_order })
 export const toImage = (r: ImageRow): ImageRecord => ({ id: r.id, path: r.storage_path, alt: r.alt, width: r.width, height: r.height, kind: r.kind, sortOrder: r.sort_order })

@@ -79,6 +79,8 @@ export function SiteFooter() {
                 <Link to="/diaxeirisi" className="link-draw inline-block py-2 text-stone hover:text-paper">Διαχείριση (επίδειξη)</Link>
               </>
             )}
+            {' · '}
+            <span lang="en" className="whitespace-nowrap">Powered by Grigoris Avgoustidis</span>
           </p>
           {(root?.samplePhotos ?? true) && <p>Ορισμένες φωτογραφίες είναι ενδεικτικές (Unsplash) και δεν αποτελούν έργα του στούντιο.</p>}
         </div>

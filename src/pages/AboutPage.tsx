@@ -8,6 +8,7 @@ import { PlaceholderBadge } from '../components/ui/PlaceholderBadge'
 import { PortraitPlaceholder } from '../components/ui/PortraitPlaceholder'
 import type { AboutContent, SiteSettings } from '../content/types'
 import { gsap, useGSAP } from '../lib/gsap'
+import { introAllowed } from '../lib/prerender'
 import { useSeo } from '../lib/seo'
 import { ContactCta } from '../sections/home/ContactCta'
 
@@ -21,6 +22,7 @@ export function AboutPage() {
     () => {
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!introAllowed()) return
         gsap.fromTo('[data-about-intro]', { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1, delay: 0.15 })
       })
       return () => mm.revert()

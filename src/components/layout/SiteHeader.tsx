@@ -81,10 +81,10 @@ export function SiteHeader() {
             to="/"
             onClick={(e) => handleNavClick(e, '/', pathname, closeMenu)}
             className="group flex items-baseline gap-3 justify-self-start"
-            aria-label="ATELIER STUDIO — Αρχική σελίδα"
           >
             <span className="font-display text-[1.45rem] leading-none tracking-[0.14em] transition-opacity duration-300 group-hover:opacity-80">ATELIER</span>
-            <span className="text-[0.66rem] font-semibold leading-none tracking-[0.34em] text-bronze-light">STUDIO</span>
+            <span className="text-[0.66rem] font-semibold leading-none tracking-[0.34em] text-bronze-light"> STUDIO</span>
+            <span className="visually-hidden">, αρχική σελίδα</span>
           </Link>
 
           <ul

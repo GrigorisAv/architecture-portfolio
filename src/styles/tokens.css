@@ -13,14 +13,14 @@
   --color-stone-deep: #b9b0a2;
   --color-bronze: #a28b71;
   --color-bronze-light: #c2ae94;
-  --color-bronze-ink: #735c45;
+  --color-bronze-ink: #6a5440;
   --color-muted-paper: #5e5850;
   --color-muted-ink: #a8a196;
   --color-error: #9b2c1f;
 
   /* Type */
-  --font-display: 'Noto Serif Display Variable', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Manrope Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Noto Serif Display Variable', 'Noto Serif Display Fallback', Georgia, serif;
+  --font-sans: 'Manrope Variable', 'Manrope Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --text-hero: clamp(3.25rem, 9vw, 10.5rem);
   --text-hero--line-height: 0.92;
@@ -59,4 +59,26 @@
   /* Layout */
   --container-page: 100rem;
   --header-h: 5.5rem;
+}
+
+/*
+ * Metric-matched fallbacks: until the web fonts arrive, text is set in a local font scaled to the same
+ * width/ascent/descent, so the swap does not move the layout (CLS). Values from Capsize metrics
+ * (Noto Serif Display vs Times New Roman, Manrope vs Arial), computed the fontaine way.
+ */
+@font-face {
+  font-family: 'Noto Serif Display Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('Tinos');
+  size-adjust: 117.17%;
+  ascent-override: 91.24%;
+  descent-override: 25.01%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo'), local('Helvetica');
+  size-adjust: 103.19%;
+  ascent-override: 103.31%;
+  descent-override: 29.07%;
+  line-gap-override: 0%;
 }

@@ -4,12 +4,9 @@ import { content } from './content/repository'
 import { HomePage } from './pages/HomePage'
 import { HydrateFallback } from './pages/HydrateFallback'
 import { RouteError } from './pages/RouteError'
-import { AboutPage } from './pages/AboutPage'
-import { PrivacyPage } from './pages/PrivacyPage'
-import { ProjectDetailPage } from './pages/ProjectDetailPage'
-import { ProjectsPage } from './pages/ProjectsPage'
-import { QuotePage } from './pages/QuotePage'
-import { ServicesPage } from './pages/ServicesPage'
+
+/** Inner pages are separate chunks, fetched in parallel with their loader data. The home page stays eager (LCP). */
+const page = <K extends string>(load: () => Promise<Record<K, React.ComponentType>>, name: K) => async () => ({ Component: (await load())[name] })
 
 /** Route loaders call the content repository only, so the CMS swap in Phase 3 is invisible to pages. */
 const routes: RouteObject[] = [
@@ -34,7 +31,7 @@ const routes: RouteObject[] = [
         },
         {
           path: 'erga',
-          element: <ProjectsPage />,
+          lazy: page(() => import('./pages/ProjectsPage'), 'ProjectsPage'),
           loader: async () => {
             const [projects, categories] = await Promise.all([content.listProjects(), content.listCategories()])
             return { projects, categories }
@@ -42,7 +39,7 @@ const routes: RouteObject[] = [
         },
         {
           path: 'erga/:slug',
-          element: <ProjectDetailPage />,
+          lazy: page(() => import('./pages/ProjectDetailPage'), 'ProjectDetailPage'),
           loader: async ({ params }) => {
             const slug = params.slug ?? ''
             const [project, next, categories] = await Promise.all([content.getProject(slug), content.getAdjacentProject(slug), content.listCategories()])
@@ -50,17 +47,17 @@ const routes: RouteObject[] = [
             return { project, next, categories }
           },
         },
-        { path: 'ypiresies', element: <ServicesPage />, loader: async () => ({ services: await content.listServices() }) },
+        { path: 'ypiresies', lazy: page(() => import('./pages/ServicesPage'), 'ServicesPage'), loader: async () => ({ services: await content.listServices() }) },
         {
           path: 'sxetika',
-          element: <AboutPage />,
+          lazy: page(() => import('./pages/AboutPage'), 'AboutPage'),
           loader: async () => {
             const [about, settings] = await Promise.all([content.getAboutContent(), content.getSiteSettings()])
             return { about, settings }
           },
         },
-        { path: 'aitima-prosforas', element: <QuotePage /> },
-        { path: 'politiki-aporritou', element: <PrivacyPage /> },
+        { path: 'aitima-prosforas', lazy: page(() => import('./pages/QuotePage'), 'QuotePage') },
+        { path: 'politiki-aporritou', lazy: page(() => import('./pages/PrivacyPage'), 'PrivacyPage') },
         { path: '*', element: <RouteError />, loader: () => { throw data('Not found', { status: 404 }) } },
       ],
     },

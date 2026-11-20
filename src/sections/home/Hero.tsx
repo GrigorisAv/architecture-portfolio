@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Picture } from '../../components/media/Picture'
 import { gsap, MOTION, useGSAP } from '../../lib/gsap'
+import { introAllowed } from '../../lib/prerender'
 import { scrollToSection } from '../../lib/scroll'
 
 const heroImage = {
@@ -25,6 +26,7 @@ export function Hero() {
 
       // Intro (runs for any motion-allowed viewport)
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!introAllowed()) return
         const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
         tl.fromTo('[data-hero-reveal]', { clipPath: 'inset(16% 20% 16% 20%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.9, ease: 'expo.inOut' })
           .fromTo('[data-hero-zoom]', { scale: 1.28 }, { scale: 1, duration: 2.6 }, 0)
@@ -142,7 +144,7 @@ export function Hero() {
           data-hero-cue
           onClick={() => scrollToSection('filosofia')}
           className="group absolute bottom-[clamp(2.5rem,7vh,5rem)] right-[var(--spacing-gutter)] z-10 hidden flex-col items-center gap-4 text-paper md:flex"
-          aria-label="Μετάβαση στη φιλοσοφία του στούντιο"
+          aria-label="Κύλιση στη φιλοσοφία του στούντιο"
         >
           <span className="eyebrow [writing-mode:vertical-rl]">Κύλιση</span>
           <span aria-hidden="true" className="relative h-20 w-px overflow-hidden bg-paper/25">

@@ -13,9 +13,10 @@ export function SiteFooter() {
       <div className="page-x mx-auto max-w-[var(--container-page)] pb-10 pt-20">
         <div className="grid-12 gap-y-12">
           <div className="col-span-4 lg:col-span-5">
-            <Link to="/" onClick={(e) => handleNavClick(e, '/', pathname)} className="inline-flex items-center gap-3" aria-label="ATELIER STUDIO — Αρχική σελίδα">
+            <Link to="/" onClick={(e) => handleNavClick(e, '/', pathname)} className="inline-flex items-center gap-3">
               <Monogram className="h-9 w-9 text-bronze-light" />
               <span className="font-display text-2xl tracking-[0.3em]">ATELIER STUDIO</span>
+              <span className="visually-hidden">, αρχική σελίδα</span>
             </Link>
             <p className="mt-6 max-w-sm text-muted-ink">Αρχιτεκτονική &amp; Εσωτερικοί Χώροι. Η τέχνη του χώρου, με μεσογειακό φως και καθαρές αναλογίες.</p>
           </div>

@@ -25,7 +25,7 @@ export function srcSet(src: string, ext: 'avif' | 'webp' | 'jpg'): string | unde
 
 export function fallbackSrc(src: string, preferred = 1600): string {
   const entry = entries[src]
-  if (!entry) return src // absolute URL (CMS)
+  if (!entry) return src // absolute URL (CMS upload)
   const w = entry.widths.find((x) => x >= preferred) ?? entry.widths[entry.widths.length - 1]
   return `${BASE}images/${src}-${w}.jpg`
 }

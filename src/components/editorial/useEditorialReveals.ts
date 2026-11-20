@@ -45,10 +45,14 @@ export function useEditorialReveals(scope: RefObject<HTMLElement | null>) {
         })
 
         q('[data-reveal-words]').forEach((el: HTMLElement) => {
+          // Colour (not opacity) reveal: words start at a warm grey that still meets 3:1 for large text,
+          // and settle on their own final colour, so the statement is legible at every scroll position.
+          const words = [...el.querySelectorAll<HTMLElement>('[data-word]')]
+          words.forEach((w) => (w.dataset.endColor = getComputedStyle(w).color))
           gsap.fromTo(
-            el.querySelectorAll('[data-word]'),
-            { opacity: 0.16 },
-            { opacity: 1, stagger: 0.08, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: 1 } },
+            words,
+            { color: '#8a8378' },
+            { color: (_i: number, w: HTMLElement) => w.dataset.endColor!, stagger: 0.08, ease: 'none', scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: 1 } },
           )
         })
       })

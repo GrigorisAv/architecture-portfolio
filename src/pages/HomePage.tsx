@@ -1,6 +1,6 @@
 import { useLoaderData } from 'react-router-dom'
 import type { Project, ProjectCategory, Service, SiteSettings } from '../content/types'
-import { useSeo } from '../lib/seo'
+import { absoluteUrl, useJsonLd, useSeo } from '../lib/seo'
 import { ArchitectProfile } from '../sections/home/ArchitectProfile'
 import { ContactCta } from '../sections/home/ContactCta'
 import { Disciplines } from '../sections/home/Disciplines'
@@ -19,6 +19,19 @@ interface HomeData {
 export function HomePage() {
   const { featured, categories, services, settings } = useLoaderData() as HomeData
   useSeo({ description: settings.seo.description })
+  useJsonLd('organization', {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: settings.studioName,
+    description: settings.seo.description,
+    url: absoluteUrl('/'),
+    image: absoluteUrl('images/hero-dusk-villa-1600.jpg'),
+    knowsAbout: ['Αρχιτεκτονική', 'Εσωτερικός σχεδιασμός', 'Ανακαινίσεις'],
+    ...(settings.email ? { email: settings.email } : {}),
+    ...(settings.phone ? { telephone: settings.phone } : {}),
+    ...(settings.address ? { address: settings.address } : {}),
+    ...(settings.instagram ? { sameAs: [settings.instagram] } : {}),
+  })
 
   return (
     <>

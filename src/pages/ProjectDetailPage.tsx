@@ -10,7 +10,9 @@ import { ArrowRight } from '../components/ui/icons'
 import { PlaceholderBadge } from '../components/ui/PlaceholderBadge'
 import type { Project, ProjectCategory } from '../content/types'
 import { gsap, MOTION, useGSAP } from '../lib/gsap'
-import { useSeo } from '../lib/seo'
+import { introAllowed } from '../lib/prerender'
+import { absoluteUrl, useJsonLd, useSeo } from '../lib/seo'
+import { fallbackSrc } from '../content/images'
 
 interface DetailData {
   project: Project
@@ -28,7 +30,30 @@ const GALLERY_LAYOUT = [
 export function ProjectDetailPage() {
   const { project, next, categories } = useLoaderData() as DetailData
   const category = categories.find((c) => c.id === project.categoryId)
-  useSeo({ title: project.title, description: project.summary })
+  const ogImage = fallbackSrc(project.cover.src)
+  useSeo({ title: project.title, description: project.summary, image: ogImage, type: 'article' })
+  useJsonLd('project', {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.summary,
+    image: absoluteUrl(ogImage),
+    url: absoluteUrl(`/erga/${project.slug}`),
+    inLanguage: 'el',
+    ...(category ? { genre: category.label } : {}),
+    ...(project.year ? { dateCreated: String(project.year) } : {}),
+    ...(project.location ? { locationCreated: project.location } : {}),
+    creator: { '@type': 'Organization', name: 'ATELIER STUDIO', url: absoluteUrl('/') },
+  })
+  useJsonLd('breadcrumbs', {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Έργα', item: absoluteUrl('/erga') },
+      ...(category ? [{ '@type': 'ListItem', position: 2, name: category.label, item: absoluteUrl(`/erga?katigoria=${category.slug}`) }] : []),
+      { '@type': 'ListItem', position: category ? 3 : 2, name: project.title, item: absoluteUrl(`/erga/${project.slug}`) },
+    ],
+  })
 
   const root = useRef<HTMLDivElement>(null)
   useEditorialReveals(root)
@@ -39,6 +64,7 @@ export function ProjectDetailPage() {
     () => {
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!introAllowed()) return
         gsap.fromTo('[data-detail-reveal]', { clipPath: 'inset(10% 8% 10% 8%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.6, ease: 'expo.inOut' })
         gsap.fromTo('[data-detail-zoom]', { scale: 1.2 }, { scale: 1, duration: 2.2, ease: 'expo.out' })
         gsap.fromTo('[data-detail-fade]', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.1, delay: 0.7 })

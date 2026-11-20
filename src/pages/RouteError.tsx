@@ -5,7 +5,7 @@ export function RouteError() {
   const error = useRouteError()
   const notFound = isRouteErrorResponse(error) && error.status === 404
   const title = notFound ? 'Η σελίδα δεν βρέθηκε' : 'Κάτι δεν πήγε καλά'
-  useSeo({ title })
+  useSeo({ title, noindex: true })
   return (
     <section className="page-x flex min-h-svh flex-col justify-center bg-ink pt-32 pb-20 text-paper">
       <p className="eyebrow text-bronze-light">{notFound ? 'Σφάλμα 404' : 'Σφάλμα'}</p>

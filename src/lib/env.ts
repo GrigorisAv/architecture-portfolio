@@ -10,3 +10,6 @@ export const MEDIA_BUCKET = 'media'
 
 export type CmsMode = 'supabase' | 'demo' | 'off'
 export const CMS_MODE: CmsMode = SUPABASE_URL && SUPABASE_ANON_KEY ? 'supabase' : import.meta.env.VITE_CMS_DEMO === 'true' ? 'demo' : 'off'
+
+/** Public origin of the site, e.g. https://www.example.gr (canonical URLs, Open Graph, sitemap). */
+export const SITE_URL = ((import.meta.env.VITE_SITE_URL as string | undefined) ?? '').replace(/\/$/, '')

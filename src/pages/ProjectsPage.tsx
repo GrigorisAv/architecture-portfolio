@@ -5,6 +5,7 @@ import { useEditorialReveals } from '../components/editorial/useEditorialReveals
 import { ProjectCard } from '../components/project/ProjectCard'
 import type { Project, ProjectCategory } from '../content/types'
 import { gsap, prefersReducedMotion, useGSAP } from '../lib/gsap'
+import { introAllowed } from '../lib/prerender'
 import { useSeo } from '../lib/seo'
 import { ContactCta } from '../sections/home/ContactCta'
 
@@ -131,6 +132,7 @@ function ProjectGrid({ projects, labelFor }: { projects: Project[]; labelFor: (i
     () => {
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!introAllowed()) return
         gsap.fromTo(root.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'expo.out' })
       })
       return () => mm.revert()

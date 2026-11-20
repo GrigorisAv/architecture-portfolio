@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
+import { introAllowed } from '../../lib/prerender'
 import { Eyebrow } from '../ui/Eyebrow'
 
 interface PageIntroProps {
@@ -18,6 +19,7 @@ export function PageIntro({ eyebrow, title, intro, aside, tone = 'paper', childr
     () => {
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!introAllowed()) return
         gsap.fromTo('[data-intro]', { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1, delay: 0.15 })
       })
       return () => mm.revert()

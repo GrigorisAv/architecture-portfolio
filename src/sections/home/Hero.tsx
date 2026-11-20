@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { Picture } from '../../components/media/Picture'
 import type { SiteImage } from '../../content/types'
 import { gsap, MOTION, useGSAP } from '../../lib/gsap'
-import { introAllowed } from '../../lib/prerender'
 import { scrollToSection } from '../../lib/scroll'
 
 /**
@@ -21,11 +20,11 @@ export function Hero({ image }: { image: SiteImage }) {
 
       // Intro (runs for any motion-allowed viewport)
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        if (!introAllowed()) return
+        // Plays on the first (prerendered) load too: global.css holds the start state until hydration, so there is no flash.
         const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
         tl.fromTo('[data-hero-reveal]', { clipPath: 'inset(16% 20% 16% 20%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.9, ease: 'expo.inOut' })
           .fromTo('[data-hero-zoom]', { scale: 1.28 }, { scale: 1, duration: 2.6 }, 0)
-          .fromTo('[data-hero-line]', { yPercent: 115 }, { yPercent: 0, duration: 1.4, stagger: 0.12 }, 0.75)
+          .fromTo('[data-hero-line]', { yPercent: 115, y: 0 }, { yPercent: 0, y: 0, duration: 1.4, stagger: 0.12 }, 0.75)
           .fromTo('[data-hero-fade]', { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.1 }, 1.15)
       })
 
@@ -63,6 +62,9 @@ export function Hero({ image }: { image: SiteImage }) {
           scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
         })
       })
+
+      // GSAP now owns the intro state (or motion is reduced): release the static start state from global.css.
+      document.documentElement.removeAttribute('data-hero-intro')
 
       return () => mm.revert()
     },

@@ -90,12 +90,25 @@ test.describe('home', () => {
 
 test.describe('mobile', () => {
   test.use(iPhone)
+  test('hero intro plays on the first, prerendered load and ends in its final state', async ({ page }) => {
+    await page.goto('/')
+    await expect.poll(() => page.evaluate(() => document.documentElement.hasAttribute('data-hero-intro'))).toBe(false)
+    await expect
+      .poll(() => page.$$eval('[data-hero-line]', (els) => els.every((e) => getComputedStyle(e).transform === 'matrix(1, 0, 0, 1, 0, 0)')), { timeout: 8000 })
+      .toBe(true)
+    await expect(page.locator('#hero-title')).toBeVisible()
+  })
+
   test('menu: opens, traps focus, Escape closes, links navigate and close', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     const toggle = page.locator('button[aria-controls="mobile-menu"]')
     await toggle.click()
     await expect(toggle).toHaveAttribute('aria-expanded', 'true')
     await expect.poll(() => page.evaluate(() => document.getElementById('mobile-menu')!.contains(document.activeElement))).toBe(true)
+    // Regression: labels on a prerendered page must slide fully into view (not stay offset below their masks).
+    await expect
+      .poll(() => page.$$eval('[data-menu-line]', (els) => els.every((e) => getComputedStyle(e).transform === 'matrix(1, 0, 0, 1, 0, 0)')))
+      .toBe(true)
     await page.keyboard.press('Escape')
     await expect.poll(() => overlay(page)).toEqual({ menu: 'hidden', curtain: 'hidden', lock: '' })
     await expect(toggle).toBeFocused()

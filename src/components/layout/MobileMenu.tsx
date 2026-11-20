@@ -1,9 +1,10 @@
 import { useEffect, useRef, type RefObject } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useRouteLoaderData } from 'react-router-dom'
 import { ctaNav, primaryNav } from '../../config/navigation'
 import { gsap, prefersReducedMotion, useGSAP } from '../../lib/gsap'
 import { ArrowRight } from '../ui/icons'
 import { handleNavClick } from './navLinkHandler'
+import type { RootData } from './SiteFooter'
 
 interface MobileMenuProps {
   open: boolean
@@ -22,6 +23,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
  */
 export function MobileMenu({ open, onClose, toggleRef, activeIndex }: MobileMenuProps) {
   const { pathname } = useLocation()
+  const settings = (useRouteLoaderData('root') as RootData | undefined)?.settings
   const rootRef = useRef<HTMLDivElement>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
 
@@ -30,7 +32,8 @@ export function MobileMenu({ open, onClose, toggleRef, activeIndex }: MobileMenu
       const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } })
       tl.set(rootRef.current, { autoAlpha: 1 })
         .fromTo(rootRef.current, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.7, ease: 'expo.inOut' })
-        .fromTo('[data-menu-line]', { yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.06 }, '-=0.3')
+        // y: 0 explicitly, so any existing transform can never add a pixel offset on top of yPercent.
+        .fromTo('[data-menu-line]', { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: 0.9, stagger: 0.06 }, '-=0.3')
         .fromTo('[data-menu-fade]', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.05 }, '-=0.6')
       tlRef.current = tl
       return () => {
@@ -161,11 +164,17 @@ export function MobileMenu({ open, onClose, toggleRef, activeIndex }: MobileMenu
             {ctaNav.label}
             <ArrowRight />
           </Link>
-          <p className="text-sm text-muted-ink">
-            Αρχιτεκτονική &amp; Εσωτερικοί Χώροι
-            <br />
-            Τα στοιχεία επικοινωνίας θα προστεθούν σύντομα.
-          </p>
+          <div className="text-sm text-muted-ink">
+            <p>Αρχιτεκτονική &amp; Εσωτερικοί Χώροι</p>
+            {settings?.email || settings?.phone ? (
+              <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-stone">
+                {settings.phone && <a href={`tel:${settings.phone.replace(/[^\d+]/g, '')}`} className="py-1.5">{settings.phone}</a>}
+                {settings.email && <a href={`mailto:${settings.email}`} className="break-all py-1.5">{settings.email}</a>}
+              </p>
+            ) : (
+              <p>Τα στοιχεία επικοινωνίας θα προστεθούν σύντομα.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

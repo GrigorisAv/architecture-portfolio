@@ -187,6 +187,24 @@
   }
 }
 
+/*
+ * Hero intro on the first, prerendered load: the static HTML already shows the intro's start state, so the
+ * cinematic reveal can play without a flash. Hero.tsx removes data-hero-intro once GSAP holds that state.
+ * Failsafe: if the script never runs, the final state appears after a few seconds.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-hero-intro] .hero :is([data-hero-reveal], [data-hero-zoom], [data-hero-line], [data-hero-fade]) {
+    animation: hero-failsafe 0.8s 4s forwards;
+  }
+  html[data-hero-intro] .hero [data-hero-reveal] { clip-path: inset(16% 20% 16% 20%); }
+  html[data-hero-intro] .hero [data-hero-zoom] { transform: scale(1.28); }
+  html[data-hero-intro] .hero [data-hero-line] { transform: translateY(115%); }
+  html[data-hero-intro] .hero [data-hero-fade] { opacity: 0; }
+}
+@keyframes hero-failsafe {
+  to { clip-path: inset(0); transform: none; opacity: 1; }
+}
+
 @keyframes scroll-cue {
   0% { transform: translateY(-100%); }
   60%, 100% { transform: translateY(200%); }

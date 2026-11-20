@@ -61,6 +61,11 @@ async function render(route) {
     ({ siteUrl }) => {
       const links = [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href'))
       document.documentElement.setAttribute('data-prerendered', 'true')
+      // Start state of the home hero intro (see global.css); only matches pages that have a .hero.
+      if (document.querySelector('.hero')) document.documentElement.setAttribute('data-hero-intro', '')
+      // The closed mobile menu's GSAP state must not be baked into the HTML: the client builds its own timeline,
+      // and a pre-existing inline transform would be parsed as an extra offset (labels stuck below their masks).
+      document.querySelectorAll('#mobile-menu, #mobile-menu [style]').forEach((el) => el.removeAttribute('style'))
       // Asset/link URLs injected at runtime (e.g. Vite modulepreload) may be absolute to the build server: make them root-relative.
       for (const el of document.querySelectorAll('[href], [src]')) {
         if (el.matches('link[rel="canonical"]')) continue

@@ -220,7 +220,7 @@ export function ProjectGallery3D({ projects, categories }: Props) {
                   </h3>
                   <p className="mt-6 max-w-[26rem] text-stone">{project.summary}</p>
                   <div className="mt-8 flex flex-wrap items-center gap-5">
-                    <Link to={`/erga/${project.slug}`} className="group inline-flex items-center gap-3 text-sm font-semibold tracking-[0.08em] text-paper">
+                    <Link to={`/erga/${project.slug}`} className="group -my-3 inline-flex min-h-11 items-center gap-3 py-3 text-sm font-semibold tracking-[0.08em] text-paper">
                       <span className="link-draw">Δείτε το έργο</span>
                       <ArrowRight className="h-3 w-5 transition-transform duration-500 ease-[var(--ease-expo)] group-hover:translate-x-1" />
                       <span className="visually-hidden">: {project.title}</span>

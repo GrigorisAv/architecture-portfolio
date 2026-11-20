@@ -7,7 +7,7 @@ import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { brotliCompressSync, gzipSync } from 'node:zlib'
 
-const DIST = path.resolve('dist')
+const DIST = path.resolve(process.env.DIST ?? 'dist')
 const PORT = Number(process.env.PORT ?? 4173)
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.avif': 'image/avif', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml' }
 const isFile = async (p) => { try { return (await stat(p)).isFile() } catch { return false } }

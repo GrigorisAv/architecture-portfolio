@@ -307,7 +307,7 @@ export function QuotePage() {
                   <span id="q-privacy-text" className="text-sm leading-relaxed text-muted-paper">
                     <span className="font-semibold text-ink">Αποδέχομαι την επεξεργασία των στοιχείων μου</span>
                     <span className="text-bronze-ink" aria-hidden="true"> *</span> αποκλειστικά για την απάντηση σε αυτό το αίτημα, σύμφωνα με την{' '}
-                    <Link to="/politiki-aporritou" className="text-ink underline underline-offset-4">Πολιτική Απορρήτου</Link>.
+                    <Link to="/politiki-aporritou" className="inline-block py-1 text-ink underline underline-offset-4">Πολιτική Απορρήτου</Link>.
                   </span>
                 </label>
                 <p id="q-privacy-error" className={`mt-2 min-h-[1.25rem] text-sm font-medium text-error ${err('privacyConsent') ? '' : 'invisible'}`} aria-live="polite">

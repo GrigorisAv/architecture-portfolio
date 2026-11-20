@@ -110,9 +110,9 @@ export function ProjectDetailPage() {
         <div className="page-x relative z-10 mx-auto flex h-full max-w-[var(--container-page)] flex-col justify-end pb-[clamp(2.5rem,7vh,5rem)]">
           <nav aria-label="Διαδρομή" data-detail-fade className="mb-8">
             <ol className="eyebrow flex flex-wrap items-center gap-3 text-stone">
-              <li><Link to="/erga" className="link-draw">Έργα</Link></li>
+              <li><Link to="/erga" className="link-draw inline-block py-2">Έργα</Link></li>
               <li aria-hidden="true">/</li>
-              <li>{category && <Link to={`/erga?katigoria=${category.slug}`} className="link-draw">{category.label}</Link>}</li>
+              <li>{category && <Link to={`/erga?katigoria=${category.slug}`} className="link-draw inline-block py-2">{category.label}</Link>}</li>
             </ol>
           </nav>
           <h1 id="project-title" data-detail-fade className="max-w-5xl text-hero font-light">{project.title}</h1>
@@ -245,7 +245,7 @@ export function ProjectDetailPage() {
             </div>
           </Link>
           <div className="page-x mx-auto flex max-w-[var(--container-page)] justify-center py-12">
-            <Link to="/erga" className="link-draw eyebrow text-stone hover:text-paper">Όλα τα έργα</Link>
+            <Link to="/erga" className="link-draw eyebrow inline-flex min-h-11 items-center text-stone hover:text-paper">Όλα τα έργα</Link>
           </div>
         </section>
       )}

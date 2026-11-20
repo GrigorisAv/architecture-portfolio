@@ -29,3 +29,6 @@ dist-preview
 .env
 .env.*
 !.env.example
+dist-supabase-test
+test-results
+playwright-report

@@ -12,7 +12,12 @@
     "build:preview": "VITE_BASE=./ VITE_ROUTER=memory VITE_CMS_DEMO=true vite build --outDir dist-preview && node scripts/make-preview-page.mjs",
     "seed:generate": "node --experimental-strip-types --no-warnings scripts/generate-seed.mjs",
     "build:static": "npm run build && node scripts/prerender.mjs",
-    "serve": "node scripts/serve-dist.mjs"
+    "serve": "node scripts/serve-dist.mjs",
+    "test:unit": "node --experimental-strip-types --no-warnings --test 'tests/unit/*.test.ts'",
+    "test:e2e": "playwright test --trace off",
+    "test:db": "bash scripts/test-db.sh",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:supabase-mode": "bash scripts/test-supabase-mode.sh"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",

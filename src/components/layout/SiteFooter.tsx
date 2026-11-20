@@ -13,7 +13,7 @@ export function SiteFooter() {
       <div className="page-x mx-auto max-w-[var(--container-page)] pb-10 pt-20">
         <div className="grid-12 gap-y-12">
           <div className="col-span-4 lg:col-span-5">
-            <Link to="/" onClick={(e) => handleNavClick(e, '/', pathname)} className="inline-flex items-center gap-3">
+            <Link to="/" onClick={(e) => handleNavClick(e, '/', pathname)} className="inline-flex min-h-11 items-center gap-3">
               <Monogram className="h-9 w-9 text-bronze-light" />
               <span className="font-display text-2xl tracking-[0.3em]">ATELIER STUDIO</span>
               <span className="visually-hidden">, αρχική σελίδα</span>
@@ -43,11 +43,11 @@ export function SiteFooter() {
         <div className="mt-20 flex flex-col gap-4 border-t border-paper/12 pt-6 text-sm text-muted-ink md:flex-row md:items-center md:justify-between">
           <p>
             © {YEAR} ATELIER STUDIO. Προσωρινή ονομασία. ·{' '}
-            <Link to="/politiki-aporritou" className="link-draw text-stone hover:text-paper">Πολιτική Απορρήτου</Link>
+            <Link to="/politiki-aporritou" className="link-draw inline-block py-2 text-stone hover:text-paper">Πολιτική Απορρήτου</Link>
             {CMS_MODE === 'demo' && (
               <>
                 {' · '}
-                <Link to="/diaxeirisi" className="link-draw text-stone hover:text-paper">Διαχείριση (επίδειξη)</Link>
+                <Link to="/diaxeirisi" className="link-draw inline-block py-2 text-stone hover:text-paper">Διαχείριση (επίδειξη)</Link>
               </>
             )}
           </p>

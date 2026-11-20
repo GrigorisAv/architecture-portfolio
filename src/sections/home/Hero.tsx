@@ -143,7 +143,7 @@ export function Hero() {
           data-hero-fade
           data-hero-cue
           onClick={() => scrollToSection('filosofia')}
-          className="group absolute bottom-[clamp(2.5rem,7vh,5rem)] right-[var(--spacing-gutter)] z-10 hidden flex-col items-center gap-4 text-paper md:flex"
+          className="group absolute bottom-[clamp(2.5rem,7vh,5rem)] right-[calc(var(--spacing-gutter)-0.875rem)] z-10 hidden min-w-11 flex-col items-center gap-4 px-3.5 text-paper md:flex"
           aria-label="Κύλιση στη φιλοσοφία του στούντιο"
         >
           <span className="eyebrow [writing-mode:vertical-rl]">Κύλιση</span>

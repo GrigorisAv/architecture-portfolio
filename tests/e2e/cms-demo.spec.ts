@@ -1,0 +1,83 @@
+import { expect, test, type Page } from '@playwright/test'
+import path from 'node:path'
+
+const login = async (page: Page) => {
+  await page.goto('/diaxeirisi')
+  await expect(page.locator('[role="note"]')).toContainText('Λειτουργία επίδειξης')
+  await page.getByRole('button', { name: 'Είσοδος επίδειξης' }).click()
+  await expect(page.locator('h1')).toHaveText('Πίνακας ελέγχου')
+}
+
+test('admin is private: noindex and no public sign-up', async ({ page }) => {
+  await page.goto('/diaxeirisi')
+  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(1)
+  await expect(page.getByText('Δεν υπάρχει δημόσια εγγραφή')).toBeVisible()
+})
+
+test('quote from the site appears in the admin inbox', async ({ page }) => {
+  await page.goto('/aitima-prosforas')
+  await page.fill('#q-fullname', 'Δοκιμή Πελάτη')
+  await page.fill('#q-email', 'pelatis@example.gr')
+  await page.fill('#q-phone', '6900000000')
+  await page.fill('#q-area', 'Χανιά')
+  await page.check('#q-type-0', { force: true })
+  await page.fill('#q-description', 'Νέα κατοικία σε οικόπεδο 600 τ.μ. με θέα στη θάλασσα.')
+  await page.check('#q-privacy')
+  await page.locator('button[type="submit"]').click()
+  await expect(page.locator('[role="status"]').last()).toContainText('Λειτουργία επίδειξης: το αίτημα δεν στάλθηκε')
+  await login(page)
+  await page.goto('/diaxeirisi/aitimata')
+  await page.getByText('Δοκιμή Πελάτη').click()
+  await expect(page.getByText('Νέα κατοικία σε οικόπεδο 600')).toBeVisible()
+  await page.getByRole('button', { name: 'Σήμανση ως απαντημένο' }).click()
+  await expect(page.locator('#q-status')).toHaveValue('replied')
+})
+
+test('edit a project, guard unsaved changes, see it on the site', async ({ page }) => {
+  await login(page)
+  await page.goto('/diaxeirisi/erga')
+  await page.locator('tbody').getByText('Λευκός Όγκος').click()
+  await expect(page.locator('h1')).toHaveText('Λευκός Όγκος')
+  await page.locator('input').first().fill('Λευκός Όγκος στις Κυκλάδες')
+  await expect(page.getByText('Μη αποθηκευμένες αλλαγές')).toBeVisible()
+  await page.locator('nav[aria-label="Διαχείριση"]').getByText('Κατηγορίες').click()
+  await expect(page.locator('[role="alertdialog"]')).toBeVisible()
+  await page.getByRole('button', { name: 'Παραμονή' }).click()
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('Το έργο αποθηκεύτηκε')).toBeVisible()
+  await page.goto('/erga/lefkos-ogkos')
+  await expect(page.locator('h1')).toHaveText('Λευκός Όγκος στις Κυκλάδες')
+})
+
+test('create, upload, require alt text, publish', async ({ page }) => {
+  await login(page)
+  await page.goto('/diaxeirisi/erga/neo')
+  await expect(page.locator('h1')).toHaveText('Νέο έργο')
+  await page.locator('input').first().fill('Δοκιμαστικό Έργο Ξενώνα')
+  await expect(page.locator('input').nth(1)).toHaveValue('dokimastiko-ergo-xenona')
+  await page.getByRole('button', { name: 'Δημιουργία έργου' }).click()
+  await expect(page).toHaveURL(/\/diaxeirisi\/erga\/(?!neo)[\w-]+$/)
+  await page.setInputFiles('input[type="file"]', path.join(import.meta.dirname, '../fixtures/photo.jpg'))
+  await expect(page.getByText('· λείπει')).toBeVisible({ timeout: 15_000 })
+  await page.locator('[role="switch"]').first().click()
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('συμπληρώστε περιγραφή (alt)')).toBeVisible()
+  await page.locator('input[id^="alt-"]').fill('Σύγχρονη κατοικία κάτω από μεγάλο δέντρο')
+  await page.locator('input[id^="alt-"]').blur()
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await expect(page.getByText('είναι δημοσιευμένο')).toBeVisible()
+  await page.goto('/erga/dokimastiko-ergo-xenona')
+  await expect(page.locator('h1')).toHaveText('Δοκιμαστικό Έργο Ξενώνα')
+  await expect.poll(() => page.evaluate(() => [...document.images].some((i) => i.currentSrc.startsWith('data:image/webp') && i.naturalWidth > 0))).toBe(true)
+})
+
+test('categories in use cannot be deleted; settings reach the site', async ({ page }) => {
+  await login(page)
+  await page.goto('/diaxeirisi/katigories')
+  await expect(page.locator('li:has(input[value="katoikies"])').getByRole('button', { name: 'Διαγραφή' })).toBeDisabled()
+  await page.goto('/diaxeirisi/rythmiseis')
+  await page.getByLabel('Ονοματεπώνυμο αρχιτέκτονα').fill('Όνομα Δοκιμής')
+  await page.getByRole('button', { name: 'Αποθήκευση', exact: true }).click()
+  await page.goto('/sxetika')
+  await expect(page.locator('h1')).toHaveText('Όνομα Δοκιμής')
+})
